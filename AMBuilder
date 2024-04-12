@@ -1,0 +1,70 @@
+import os
+
+for sdk_name in MMSPlugin.sdks:
+  for cxx in MMSPlugin.all_targets:
+    sdk = MMSPlugin.sdks[sdk_name]
+
+    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
+      continue
+
+    binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+
+    if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['--std=c++17']
+      binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+    elif binary.compiler.family == 'msvc':
+      binary.compiler.cxxflags += ['/std:c++20']
+
+    if binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['-Wno-register']
+      #binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+	
+    binary.compiler.cxxincludes += [
+	    os.path.join(builder.sourcePath, 'hl2sdk-cs2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'public', 'entity2'),
+      os.path.join(builder.sourcePath, 'hl2sdk-cs2', 'game', 'server'),
+      os.path.join(builder.sourcePath, 'vendor', 'subhook'),
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
+      os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
+      os.path.join(builder.sourcePath, 'protobuf', 'generated'),
+    ]
+
+    if binary.compiler.target.platform == 'linux':
+      binary.compiler.postlink += [
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.a')
+      ]
+    elif binary.compiler.target.platform == 'windows':
+      binary.compiler.postlink += [
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
+      ]
+	
+    binary.sources += [
+      'fakeranks.cpp',
+	  os.path.join('sdk', 'schemasystem.cpp'),
+      'protobuf/generated/usermessages.pb.cc',
+      'protobuf/generated/cstrike15_usermessages.pb.cc',
+      'protobuf/generated/cstrike15_gcmessages.pb.cc',
+      'protobuf/generated/steammessages.pb.cc',
+      'protobuf/generated/engine_gcmessages.pb.cc',
+      'protobuf/generated/gcsdk_gcmessages.pb.cc',
+      'protobuf/generated/networkbasetypes.pb.cc',
+      'protobuf/generated/network_connection.pb.cc'
+    ]
+
+    if sdk_name in ['dota', 'cs2']:
+      binary.sources += [
+      os.path.join(sdk.path, 'tier1', 'generichash.cpp'),
+	    os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
+	    os.path.join(sdk.path, 'entity2', 'entityidentity.cpp'),
+	    os.path.join(sdk.path, 'entity2', 'entitykeyvalues.cpp'),
+	    os.path.join(sdk.path, 'tier1', 'convar.cpp'),
+	    os.path.join(sdk.path, 'tier1', 'keyvalues3.cpp'),
+	    os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
+    ]
+
+    if cxx.target.arch == 'x86':
+      binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
+    nodes = builder.Add(binary)
+    MMSPlugin.binaries += [nodes]
+    
+  break
