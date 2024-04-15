@@ -58,10 +58,11 @@ void FakeRank_RevealAll::GameFrame(bool simulating, bool bFirstTick, bool bLastT
 	for (int i = 0; i < 64; i++)
 	{
 		CCSPlayerController* pPlayerController =  (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
-		if(!pPlayerController || !pPlayerController->m_hPawn() || !pPlayerController->m_hPlayerPawn() || !pPlayerController->m_hPlayerPawn()->m_pMovementServices()) continue;
-		if(pPlayerController->m_steamID() <= 0)
-			continue;
-		uint64_t iButtons = pPlayerController->m_hPlayerPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
+
+		if(!pPlayerController) continue;
+		if(pPlayerController->m_iConnected() != PlayerConnectedState::PlayerConnected || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
+
+		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
 		if(std::to_string(iButtons).find("858993") != std::string::npos && !(std::to_string(iOldButtons[i]).find("858993") != std::string::npos))
 		{
 			CRecipientFilter filter;
@@ -98,7 +99,7 @@ const char* FakeRank_RevealAll::GetLicense()
 
 const char* FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.1";
+	return "1.0.2";
 }
 
 const char* FakeRank_RevealAll::GetDate()
