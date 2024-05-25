@@ -110,7 +110,7 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		CCSPlayerController* pPlayerController =  (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
 
 		if(!pPlayerController) continue;
-		if(pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
+		if(!pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
 
 		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
 		if(std::to_string(iButtons).find("858993") != std::string::npos && !(std::to_string(iOldButtons[i]).find("858993") != std::string::npos))
