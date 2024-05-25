@@ -1,5 +1,3 @@
-.vs/
-build/
-fakeranks.so
-fakeranks.dll
-fakeranks.vdf
+/build/
+/vs/
+/linuxbuild/
