@@ -14,6 +14,7 @@
 class GameSessionConfiguration_t { };
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
+SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t &, ISource2WorldSession *, const char *);
 
 /*
 #ifdef _WIN32
@@ -70,6 +71,7 @@ bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 	g_SMAPI->AddListener( this, this );
 
 	SH_ADD_HOOK(IServerGameDLL, GameFrame, server, SH_MEMBER(this, &FakeRank_RevealAll::Hook_GameFrame), true);
+	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &FakeRank_RevealAll::Hook_StartupServer), true);
 
 	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
 
@@ -85,6 +87,7 @@ bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 bool FakeRank_RevealAll::Unload(char *error, size_t maxlen)
 {
 	SH_REMOVE_HOOK(IServerGameDLL, GameFrame, server, SH_MEMBER(this, &FakeRank_RevealAll::Hook_GameFrame), true);
+	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &FakeRank_RevealAll::Hook_StartupServer), true);
 
 	return true;
 }
@@ -110,6 +113,7 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		CCSPlayerController* pPlayerController =  (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
 
 		if(!pPlayerController) continue;
+		
 		if(!pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
 
 		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
@@ -160,7 +164,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.4";
+	return "1.0.4Fix";
 }
 
 const char *FakeRank_RevealAll::GetDate()
