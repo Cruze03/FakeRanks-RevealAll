@@ -107,6 +107,7 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		return;
 	
 	int maxClients = g_pGlobals->maxClients > 64 ? 64 : g_pGlobals->maxClients;
+	CRecipientFilter filter;
 	
 	for(int i = 0; i < maxClients; i++)
 	{
@@ -119,14 +120,16 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
 		if(std::to_string(iButtons).find("858993") != std::string::npos && !(std::to_string(iOldButtons[i]).find("858993") != std::string::npos))
 		{
-			CRecipientFilter filter;
-			CPlayerSlot PlayerSlot = CPlayerSlot(i);
-			filter.AddRecipient(PlayerSlot);
-			static INetworkSerializable* message_type = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
-			CCSUsrMsg_ServerRankRevealAll message;
-			g_pGameEventSystem->PostEventAbstract(0, false, &filter, message_type, &message, 0);
+			filter.AddRecipient(CPlayerSlot(i));
 		}
 		iOldButtons[i] = iButtons;
+	}
+
+	if(filter.GetRecipientCount() > 0)
+	{
+		static INetworkSerializable* message_type = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
+		CCSUsrMsg_ServerRankRevealAll message;
+		g_pGameEventSystem->PostEventAbstract(0, false, &filter, message_type, &message, 0);
 	}
 }
 
@@ -164,7 +167,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.4Fix";
+	return "1.0.4Fix2";
 }
 
 const char *FakeRank_RevealAll::GetDate()
