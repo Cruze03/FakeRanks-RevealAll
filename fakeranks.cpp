@@ -127,9 +127,10 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 
 	if(filter.GetRecipientCount() > 0)
 	{
-		static INetworkSerializable* message_type = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
-		CCSUsrMsg_ServerRankRevealAll message;
-		g_pGameEventSystem->PostEventAbstract(0, false, &filter, message_type, &message, 0);
+		INetworkMessageInternal *netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
+		CNetMessage *msg = netmsg->AllocateMessage();
+		g_pGameEventSystem->PostEventAbstract(0, false, &filter, netmsg, msg, 0);
+		netmsg->DeallocateMessage(msg);
 	}
 }
 
@@ -167,7 +168,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.4Fix2";
+	return "1.0.5";
 }
 
 const char *FakeRank_RevealAll::GetDate()
