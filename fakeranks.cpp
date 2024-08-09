@@ -130,7 +130,8 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		INetworkMessageInternal *netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
 		CNetMessage *msg = netmsg->AllocateMessage();
 		g_pGameEventSystem->PostEventAbstract(0, false, &filter, netmsg, msg, 0);
-		netmsg->DeallocateMessage(msg);
+		// netmsg->DeallocateMessage(msg);
+		delete msg;
 	}
 }
 
@@ -168,7 +169,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.5";
+	return "1.0.6";
 }
 
 const char *FakeRank_RevealAll::GetDate()
