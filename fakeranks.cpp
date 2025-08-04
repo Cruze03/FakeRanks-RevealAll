@@ -16,11 +16,11 @@ class GameSessionConfiguration_t { };
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t &, ISource2WorldSession *, const char *);
 
+
 FakeRank_RevealAll g_FakeRanks;
 PLUGIN_EXPOSE(FakeRank_RevealAll, g_FakeRanks);
 
 IServerGameDLL* server = NULL;
-CSchemaSystem* g_pSchemaSystem2 = nullptr;
 CGlobalVars *g_pGlobals = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 IGameEventSystem *g_pGameEventSystem = nullptr;
@@ -52,7 +52,7 @@ bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 	PLUGIN_SAVEVARS();
 
 	GET_V_IFACE_ANY(GetServerFactory, server, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL);
-	GET_V_IFACE_CURRENT(GetEngineFactory, g_pSchemaSystem2, CSchemaSystem, SCHEMASYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pSchemaSystem, ISchemaSystem, SCHEMASYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pGameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
