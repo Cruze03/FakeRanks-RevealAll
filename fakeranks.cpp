@@ -16,16 +16,6 @@ class GameSessionConfiguration_t { };
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t &, ISource2WorldSession *, const char *);
 
-/*
-#ifdef _WIN32
-#define ROOTBIN "/bin/win64/"
-#define GAMEBIN "/csgo/bin/win64/"
-#else
-#define ROOTBIN "/bin/linuxsteamrt64/"
-#define GAMEBIN "/csgo/bin/linuxsteamrt64/"
-#endif
-*/
-
 FakeRank_RevealAll g_FakeRanks;
 PLUGIN_EXPOSE(FakeRank_RevealAll, g_FakeRanks);
 
@@ -102,23 +92,23 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 {
 	if(!g_pEntitySystem || !g_pGlobals)
 		return;
-	
+
 	if(g_pGlobals->tickcount % 12 != 0)
 		return;
-	
+
 	int maxClients = g_pGlobals->maxClients > 64 ? 64 : g_pGlobals->maxClients;
 	CRecipientFilter filter;
-	
+
 	for(int i = 0; i < maxClients; i++)
 	{
-		CCSPlayerController* pPlayerController =  (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
+		CCSPlayerController* pPlayerController = (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
 
 		if(!pPlayerController) continue;
-		
+
 		if(!pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
 
 		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
-		if(std::to_string(iButtons).find("858993") != std::string::npos && !(std::to_string(iOldButtons[i]).find("858993") != std::string::npos))
+		if ((iButtons & PlayerButtons_t::Scoreboard) && !(iOldButtons[i] & PlayerButtons_t::Scoreboard))
 		{
 			filter.AddRecipient(CPlayerSlot(i));
 		}
@@ -169,7 +159,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.6";
+	return "1.0.8";
 }
 
 const char *FakeRank_RevealAll::GetDate()

@@ -66,7 +66,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CInButtonStatePB final :
+class CInButtonStatePB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CInButtonStatePB) */ {
  public:
   inline CInButtonStatePB() : CInButtonStatePB(nullptr) {}
@@ -256,7 +256,7 @@ class CInButtonStatePB final :
 };
 // -------------------------------------------------------------------
 
-class CSubtickMoveStep final :
+class CSubtickMoveStep :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSubtickMoveStep) */ {
  public:
   inline CSubtickMoveStep() : CSubtickMoveStep(nullptr) {}
@@ -387,6 +387,10 @@ class CSubtickMoveStep final :
     kButtonFieldNumber = 1,
     kPressedFieldNumber = 2,
     kWhenFieldNumber = 3,
+    kAnalogForwardDeltaFieldNumber = 4,
+    kAnalogLeftDeltaFieldNumber = 5,
+    kAnalogPitchDeltaFieldNumber = 6,
+    kAnalogYawDeltaFieldNumber = 7,
   };
   // optional uint64 button = 1;
   bool has_button() const;
@@ -427,6 +431,58 @@ class CSubtickMoveStep final :
   void _internal_set_when(float value);
   public:
 
+  // optional float analog_forward_delta = 4;
+  bool has_analog_forward_delta() const;
+  private:
+  bool _internal_has_analog_forward_delta() const;
+  public:
+  void clear_analog_forward_delta();
+  float analog_forward_delta() const;
+  void set_analog_forward_delta(float value);
+  private:
+  float _internal_analog_forward_delta() const;
+  void _internal_set_analog_forward_delta(float value);
+  public:
+
+  // optional float analog_left_delta = 5;
+  bool has_analog_left_delta() const;
+  private:
+  bool _internal_has_analog_left_delta() const;
+  public:
+  void clear_analog_left_delta();
+  float analog_left_delta() const;
+  void set_analog_left_delta(float value);
+  private:
+  float _internal_analog_left_delta() const;
+  void _internal_set_analog_left_delta(float value);
+  public:
+
+  // optional float analog_pitch_delta = 6;
+  bool has_analog_pitch_delta() const;
+  private:
+  bool _internal_has_analog_pitch_delta() const;
+  public:
+  void clear_analog_pitch_delta();
+  float analog_pitch_delta() const;
+  void set_analog_pitch_delta(float value);
+  private:
+  float _internal_analog_pitch_delta() const;
+  void _internal_set_analog_pitch_delta(float value);
+  public:
+
+  // optional float analog_yaw_delta = 7;
+  bool has_analog_yaw_delta() const;
+  private:
+  bool _internal_has_analog_yaw_delta() const;
+  public:
+  void clear_analog_yaw_delta();
+  float analog_yaw_delta() const;
+  void set_analog_yaw_delta(float value);
+  private:
+  float _internal_analog_yaw_delta() const;
+  void _internal_set_analog_yaw_delta(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CSubtickMoveStep)
  private:
   class _Internal;
@@ -440,13 +496,17 @@ class CSubtickMoveStep final :
     uint64_t button_;
     bool pressed_;
     float when_;
+    float analog_forward_delta_;
+    float analog_left_delta_;
+    float analog_pitch_delta_;
+    float analog_yaw_delta_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_usercmd_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CBaseUserCmdPB final :
+class CBaseUserCmdPB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CBaseUserCmdPB) */ {
  public:
   inline CBaseUserCmdPB() : CBaseUserCmdPB(nullptr) {}
@@ -578,8 +638,8 @@ class CBaseUserCmdPB final :
     kMoveCrcFieldNumber = 19,
     kButtonsPbFieldNumber = 3,
     kViewanglesFieldNumber = 4,
-    kCommandNumberFieldNumber = 1,
-    kTickCountFieldNumber = 2,
+    kLegacyCommandNumberFieldNumber = 1,
+    kClientTickFieldNumber = 2,
     kForwardmoveFieldNumber = 5,
     kLeftmoveFieldNumber = 6,
     kUpmoveFieldNumber = 7,
@@ -588,7 +648,7 @@ class CBaseUserCmdPB final :
     kRandomSeedFieldNumber = 10,
     kMousedxFieldNumber = 11,
     kMousedyFieldNumber = 12,
-    kHasbeenpredictedFieldNumber = 13,
+    kPredictionOffsetTicksX256FieldNumber = 17,
     kConsumedServerAngleChangesFieldNumber = 20,
     kCmdFlagsFieldNumber = 21,
     kPawnEntityHandleFieldNumber = 14,
@@ -665,30 +725,30 @@ class CBaseUserCmdPB final :
       ::CMsgQAngle* viewangles);
   ::CMsgQAngle* unsafe_arena_release_viewangles();
 
-  // optional int32 command_number = 1;
-  bool has_command_number() const;
+  // optional int32 legacy_command_number = 1;
+  bool has_legacy_command_number() const;
   private:
-  bool _internal_has_command_number() const;
+  bool _internal_has_legacy_command_number() const;
   public:
-  void clear_command_number();
-  int32_t command_number() const;
-  void set_command_number(int32_t value);
+  void clear_legacy_command_number();
+  int32_t legacy_command_number() const;
+  void set_legacy_command_number(int32_t value);
   private:
-  int32_t _internal_command_number() const;
-  void _internal_set_command_number(int32_t value);
+  int32_t _internal_legacy_command_number() const;
+  void _internal_set_legacy_command_number(int32_t value);
   public:
 
-  // optional int32 tick_count = 2;
-  bool has_tick_count() const;
+  // optional int32 client_tick = 2;
+  bool has_client_tick() const;
   private:
-  bool _internal_has_tick_count() const;
+  bool _internal_has_client_tick() const;
   public:
-  void clear_tick_count();
-  int32_t tick_count() const;
-  void set_tick_count(int32_t value);
+  void clear_client_tick();
+  int32_t client_tick() const;
+  void set_client_tick(int32_t value);
   private:
-  int32_t _internal_tick_count() const;
-  void _internal_set_tick_count(int32_t value);
+  int32_t _internal_client_tick() const;
+  void _internal_set_client_tick(int32_t value);
   public:
 
   // optional float forwardmove = 5;
@@ -795,17 +855,17 @@ class CBaseUserCmdPB final :
   void _internal_set_mousedy(int32_t value);
   public:
 
-  // optional bool hasbeenpredicted = 13;
-  bool has_hasbeenpredicted() const;
+  // optional uint32 prediction_offset_ticks_x256 = 17;
+  bool has_prediction_offset_ticks_x256() const;
   private:
-  bool _internal_has_hasbeenpredicted() const;
+  bool _internal_has_prediction_offset_ticks_x256() const;
   public:
-  void clear_hasbeenpredicted();
-  bool hasbeenpredicted() const;
-  void set_hasbeenpredicted(bool value);
+  void clear_prediction_offset_ticks_x256();
+  uint32_t prediction_offset_ticks_x256() const;
+  void set_prediction_offset_ticks_x256(uint32_t value);
   private:
-  bool _internal_hasbeenpredicted() const;
-  void _internal_set_hasbeenpredicted(bool value);
+  uint32_t _internal_prediction_offset_ticks_x256() const;
+  void _internal_set_prediction_offset_ticks_x256(uint32_t value);
   public:
 
   // optional uint32 consumed_server_angle_changes = 20;
@@ -861,8 +921,8 @@ class CBaseUserCmdPB final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr move_crc_;
     ::CInButtonStatePB* buttons_pb_;
     ::CMsgQAngle* viewangles_;
-    int32_t command_number_;
-    int32_t tick_count_;
+    int32_t legacy_command_number_;
+    int32_t client_tick_;
     float forwardmove_;
     float leftmove_;
     float upmove_;
@@ -871,7 +931,7 @@ class CBaseUserCmdPB final :
     int32_t random_seed_;
     int32_t mousedx_;
     int32_t mousedy_;
-    bool hasbeenpredicted_;
+    uint32_t prediction_offset_ticks_x256_;
     uint32_t consumed_server_angle_changes_;
     int32_t cmd_flags_;
     uint32_t pawn_entity_handle_;
@@ -881,7 +941,7 @@ class CBaseUserCmdPB final :
 };
 // -------------------------------------------------------------------
 
-class CUserCmdBasePB final :
+class CUserCmdBasePB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserCmdBasePB) */ {
  public:
   inline CUserCmdBasePB() : CUserCmdBasePB(nullptr) {}
@@ -1227,64 +1287,204 @@ inline void CSubtickMoveStep::set_when(float value) {
   // @@protoc_insertion_point(field_set:CSubtickMoveStep.when)
 }
 
+// optional float analog_forward_delta = 4;
+inline bool CSubtickMoveStep::_internal_has_analog_forward_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_forward_delta() const {
+  return _internal_has_analog_forward_delta();
+}
+inline void CSubtickMoveStep::clear_analog_forward_delta() {
+  _impl_.analog_forward_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline float CSubtickMoveStep::_internal_analog_forward_delta() const {
+  return _impl_.analog_forward_delta_;
+}
+inline float CSubtickMoveStep::analog_forward_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_forward_delta)
+  return _internal_analog_forward_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_forward_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.analog_forward_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_forward_delta(float value) {
+  _internal_set_analog_forward_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_forward_delta)
+}
+
+// optional float analog_left_delta = 5;
+inline bool CSubtickMoveStep::_internal_has_analog_left_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_left_delta() const {
+  return _internal_has_analog_left_delta();
+}
+inline void CSubtickMoveStep::clear_analog_left_delta() {
+  _impl_.analog_left_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline float CSubtickMoveStep::_internal_analog_left_delta() const {
+  return _impl_.analog_left_delta_;
+}
+inline float CSubtickMoveStep::analog_left_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_left_delta)
+  return _internal_analog_left_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_left_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.analog_left_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_left_delta(float value) {
+  _internal_set_analog_left_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_left_delta)
+}
+
+// optional float analog_pitch_delta = 6;
+inline bool CSubtickMoveStep::_internal_has_analog_pitch_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_pitch_delta() const {
+  return _internal_has_analog_pitch_delta();
+}
+inline void CSubtickMoveStep::clear_analog_pitch_delta() {
+  _impl_.analog_pitch_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline float CSubtickMoveStep::_internal_analog_pitch_delta() const {
+  return _impl_.analog_pitch_delta_;
+}
+inline float CSubtickMoveStep::analog_pitch_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_pitch_delta)
+  return _internal_analog_pitch_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_pitch_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.analog_pitch_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_pitch_delta(float value) {
+  _internal_set_analog_pitch_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_pitch_delta)
+}
+
+// optional float analog_yaw_delta = 7;
+inline bool CSubtickMoveStep::_internal_has_analog_yaw_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_yaw_delta() const {
+  return _internal_has_analog_yaw_delta();
+}
+inline void CSubtickMoveStep::clear_analog_yaw_delta() {
+  _impl_.analog_yaw_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline float CSubtickMoveStep::_internal_analog_yaw_delta() const {
+  return _impl_.analog_yaw_delta_;
+}
+inline float CSubtickMoveStep::analog_yaw_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_yaw_delta)
+  return _internal_analog_yaw_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_yaw_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.analog_yaw_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_yaw_delta(float value) {
+  _internal_set_analog_yaw_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_yaw_delta)
+}
+
 // -------------------------------------------------------------------
 
 // CBaseUserCmdPB
 
-// optional int32 command_number = 1;
-inline bool CBaseUserCmdPB::_internal_has_command_number() const {
+// optional int32 legacy_command_number = 1;
+inline bool CBaseUserCmdPB::_internal_has_legacy_command_number() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool CBaseUserCmdPB::has_command_number() const {
-  return _internal_has_command_number();
+inline bool CBaseUserCmdPB::has_legacy_command_number() const {
+  return _internal_has_legacy_command_number();
 }
-inline void CBaseUserCmdPB::clear_command_number() {
-  _impl_.command_number_ = 0;
+inline void CBaseUserCmdPB::clear_legacy_command_number() {
+  _impl_.legacy_command_number_ = 0;
   _impl_._has_bits_[0] &= ~0x00000008u;
 }
-inline int32_t CBaseUserCmdPB::_internal_command_number() const {
-  return _impl_.command_number_;
+inline int32_t CBaseUserCmdPB::_internal_legacy_command_number() const {
+  return _impl_.legacy_command_number_;
 }
-inline int32_t CBaseUserCmdPB::command_number() const {
-  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.command_number)
-  return _internal_command_number();
+inline int32_t CBaseUserCmdPB::legacy_command_number() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.legacy_command_number)
+  return _internal_legacy_command_number();
 }
-inline void CBaseUserCmdPB::_internal_set_command_number(int32_t value) {
+inline void CBaseUserCmdPB::_internal_set_legacy_command_number(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.command_number_ = value;
+  _impl_.legacy_command_number_ = value;
 }
-inline void CBaseUserCmdPB::set_command_number(int32_t value) {
-  _internal_set_command_number(value);
-  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.command_number)
+inline void CBaseUserCmdPB::set_legacy_command_number(int32_t value) {
+  _internal_set_legacy_command_number(value);
+  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.legacy_command_number)
 }
 
-// optional int32 tick_count = 2;
-inline bool CBaseUserCmdPB::_internal_has_tick_count() const {
+// optional int32 client_tick = 2;
+inline bool CBaseUserCmdPB::_internal_has_client_tick() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool CBaseUserCmdPB::has_tick_count() const {
-  return _internal_has_tick_count();
+inline bool CBaseUserCmdPB::has_client_tick() const {
+  return _internal_has_client_tick();
 }
-inline void CBaseUserCmdPB::clear_tick_count() {
-  _impl_.tick_count_ = 0;
+inline void CBaseUserCmdPB::clear_client_tick() {
+  _impl_.client_tick_ = 0;
   _impl_._has_bits_[0] &= ~0x00000010u;
 }
-inline int32_t CBaseUserCmdPB::_internal_tick_count() const {
-  return _impl_.tick_count_;
+inline int32_t CBaseUserCmdPB::_internal_client_tick() const {
+  return _impl_.client_tick_;
 }
-inline int32_t CBaseUserCmdPB::tick_count() const {
-  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.tick_count)
-  return _internal_tick_count();
+inline int32_t CBaseUserCmdPB::client_tick() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.client_tick)
+  return _internal_client_tick();
 }
-inline void CBaseUserCmdPB::_internal_set_tick_count(int32_t value) {
+inline void CBaseUserCmdPB::_internal_set_client_tick(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.tick_count_ = value;
+  _impl_.client_tick_ = value;
 }
-inline void CBaseUserCmdPB::set_tick_count(int32_t value) {
-  _internal_set_tick_count(value);
-  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.tick_count)
+inline void CBaseUserCmdPB::set_client_tick(int32_t value) {
+  _internal_set_client_tick(value);
+  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.client_tick)
+}
+
+// optional uint32 prediction_offset_ticks_x256 = 17;
+inline bool CBaseUserCmdPB::_internal_has_prediction_offset_ticks_x256() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CBaseUserCmdPB::has_prediction_offset_ticks_x256() const {
+  return _internal_has_prediction_offset_ticks_x256();
+}
+inline void CBaseUserCmdPB::clear_prediction_offset_ticks_x256() {
+  _impl_.prediction_offset_ticks_x256_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CBaseUserCmdPB::_internal_prediction_offset_ticks_x256() const {
+  return _impl_.prediction_offset_ticks_x256_;
+}
+inline uint32_t CBaseUserCmdPB::prediction_offset_ticks_x256() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.prediction_offset_ticks_x256)
+  return _internal_prediction_offset_ticks_x256();
+}
+inline void CBaseUserCmdPB::_internal_set_prediction_offset_ticks_x256(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.prediction_offset_ticks_x256_ = value;
+}
+inline void CBaseUserCmdPB::set_prediction_offset_ticks_x256(uint32_t value) {
+  _internal_set_prediction_offset_ticks_x256(value);
+  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.prediction_offset_ticks_x256)
 }
 
 // optional .CInButtonStatePB buttons_pb = 3;
@@ -1686,34 +1886,6 @@ inline void CBaseUserCmdPB::_internal_set_mousedy(int32_t value) {
 inline void CBaseUserCmdPB::set_mousedy(int32_t value) {
   _internal_set_mousedy(value);
   // @@protoc_insertion_point(field_set:CBaseUserCmdPB.mousedy)
-}
-
-// optional bool hasbeenpredicted = 13;
-inline bool CBaseUserCmdPB::_internal_has_hasbeenpredicted() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
-  return value;
-}
-inline bool CBaseUserCmdPB::has_hasbeenpredicted() const {
-  return _internal_has_hasbeenpredicted();
-}
-inline void CBaseUserCmdPB::clear_hasbeenpredicted() {
-  _impl_.hasbeenpredicted_ = false;
-  _impl_._has_bits_[0] &= ~0x00002000u;
-}
-inline bool CBaseUserCmdPB::_internal_hasbeenpredicted() const {
-  return _impl_.hasbeenpredicted_;
-}
-inline bool CBaseUserCmdPB::hasbeenpredicted() const {
-  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.hasbeenpredicted)
-  return _internal_hasbeenpredicted();
-}
-inline void CBaseUserCmdPB::_internal_set_hasbeenpredicted(bool value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
-  _impl_.hasbeenpredicted_ = value;
-}
-inline void CBaseUserCmdPB::set_hasbeenpredicted(bool value) {
-  _internal_set_hasbeenpredicted(value);
-  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.hasbeenpredicted)
 }
 
 // optional uint32 pawn_entity_handle = 14 [default = 16777215];

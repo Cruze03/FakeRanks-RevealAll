@@ -49,6 +49,9 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class CDemoAnimationData;
 struct CDemoAnimationDataDefaultTypeInternal;
 extern CDemoAnimationDataDefaultTypeInternal _CDemoAnimationData_default_instance_;
+class CDemoAnimationHeader;
+struct CDemoAnimationHeaderDefaultTypeInternal;
+extern CDemoAnimationHeaderDefaultTypeInternal _CDemoAnimationHeader_default_instance_;
 class CDemoClassInfo;
 struct CDemoClassInfoDefaultTypeInternal;
 extern CDemoClassInfoDefaultTypeInternal _CDemoClassInfo_default_instance_;
@@ -76,6 +79,12 @@ extern CDemoFullPacketDefaultTypeInternal _CDemoFullPacket_default_instance_;
 class CDemoPacket;
 struct CDemoPacketDefaultTypeInternal;
 extern CDemoPacketDefaultTypeInternal _CDemoPacket_default_instance_;
+class CDemoRecovery;
+struct CDemoRecoveryDefaultTypeInternal;
+extern CDemoRecoveryDefaultTypeInternal _CDemoRecovery_default_instance_;
+class CDemoRecovery_DemoInitialSpawnGroupEntry;
+struct CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal;
+extern CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal _CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_;
 class CDemoSaveGame;
 struct CDemoSaveGameDefaultTypeInternal;
 extern CDemoSaveGameDefaultTypeInternal _CDemoSaveGame_default_instance_;
@@ -106,6 +115,9 @@ extern CDemoUserCmdDefaultTypeInternal _CDemoUserCmd_default_instance_;
 class CGameInfo;
 struct CGameInfoDefaultTypeInternal;
 extern CGameInfoDefaultTypeInternal _CGameInfo_default_instance_;
+class CGameInfo_CCSGameInfo;
+struct CGameInfo_CCSGameInfoDefaultTypeInternal;
+extern CGameInfo_CCSGameInfoDefaultTypeInternal _CGameInfo_CCSGameInfo_default_instance_;
 class CGameInfo_CDotaGameInfo;
 struct CGameInfo_CDotaGameInfoDefaultTypeInternal;
 extern CGameInfo_CDotaGameInfoDefaultTypeInternal _CGameInfo_CDotaGameInfo_default_instance_;
@@ -117,6 +129,7 @@ struct CGameInfo_CDotaGameInfo_CPlayerInfoDefaultTypeInternal;
 extern CGameInfo_CDotaGameInfo_CPlayerInfoDefaultTypeInternal _CGameInfo_CDotaGameInfo_CPlayerInfo_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CDemoAnimationData* Arena::CreateMaybeMessage<::CDemoAnimationData>(Arena*);
+template<> ::CDemoAnimationHeader* Arena::CreateMaybeMessage<::CDemoAnimationHeader>(Arena*);
 template<> ::CDemoClassInfo* Arena::CreateMaybeMessage<::CDemoClassInfo>(Arena*);
 template<> ::CDemoClassInfo_class_t* Arena::CreateMaybeMessage<::CDemoClassInfo_class_t>(Arena*);
 template<> ::CDemoConsoleCmd* Arena::CreateMaybeMessage<::CDemoConsoleCmd>(Arena*);
@@ -126,6 +139,8 @@ template<> ::CDemoFileHeader* Arena::CreateMaybeMessage<::CDemoFileHeader>(Arena
 template<> ::CDemoFileInfo* Arena::CreateMaybeMessage<::CDemoFileInfo>(Arena*);
 template<> ::CDemoFullPacket* Arena::CreateMaybeMessage<::CDemoFullPacket>(Arena*);
 template<> ::CDemoPacket* Arena::CreateMaybeMessage<::CDemoPacket>(Arena*);
+template<> ::CDemoRecovery* Arena::CreateMaybeMessage<::CDemoRecovery>(Arena*);
+template<> ::CDemoRecovery_DemoInitialSpawnGroupEntry* Arena::CreateMaybeMessage<::CDemoRecovery_DemoInitialSpawnGroupEntry>(Arena*);
 template<> ::CDemoSaveGame* Arena::CreateMaybeMessage<::CDemoSaveGame>(Arena*);
 template<> ::CDemoSendTables* Arena::CreateMaybeMessage<::CDemoSendTables>(Arena*);
 template<> ::CDemoSpawnGroups* Arena::CreateMaybeMessage<::CDemoSpawnGroups>(Arena*);
@@ -136,6 +151,7 @@ template<> ::CDemoStringTables_table_t* Arena::CreateMaybeMessage<::CDemoStringT
 template<> ::CDemoSyncTick* Arena::CreateMaybeMessage<::CDemoSyncTick>(Arena*);
 template<> ::CDemoUserCmd* Arena::CreateMaybeMessage<::CDemoUserCmd>(Arena*);
 template<> ::CGameInfo* Arena::CreateMaybeMessage<::CGameInfo>(Arena*);
+template<> ::CGameInfo_CCSGameInfo* Arena::CreateMaybeMessage<::CGameInfo_CCSGameInfo>(Arena*);
 template<> ::CGameInfo_CDotaGameInfo* Arena::CreateMaybeMessage<::CGameInfo_CDotaGameInfo>(Arena*);
 template<> ::CGameInfo_CDotaGameInfo_CHeroSelectEvent* Arena::CreateMaybeMessage<::CGameInfo_CDotaGameInfo_CHeroSelectEvent>(Arena*);
 template<> ::CGameInfo_CDotaGameInfo_CPlayerInfo* Arena::CreateMaybeMessage<::CGameInfo_CDotaGameInfo_CPlayerInfo>(Arena*);
@@ -160,7 +176,9 @@ enum EDemoCommands : int {
   DEM_SaveGame = 14,
   DEM_SpawnGroups = 15,
   DEM_AnimationData = 16,
-  DEM_Max = 17,
+  DEM_AnimationHeader = 17,
+  DEM_Recovery = 18,
+  DEM_Max = 19,
   DEM_IsCompressed = 64
 };
 bool EDemoCommands_IsValid(int value);
@@ -184,7 +202,7 @@ inline bool EDemoCommands_Parse(
 }
 // ===================================================================
 
-class CDemoFileHeader final :
+class CDemoFileHeader :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFileHeader) */ {
  public:
   inline CDemoFileHeader() : CDemoFileHeader(nullptr) {}
@@ -326,6 +344,7 @@ class CDemoFileHeader final :
     kAllowClientsideEntitiesFieldNumber = 8,
     kAllowClientsideParticlesFieldNumber = 9,
     kBuildNumFieldNumber = 13,
+    kServerStartTickFieldNumber = 15,
   };
   // required string demo_file_stamp = 1;
   bool has_demo_file_stamp() const;
@@ -554,6 +573,19 @@ class CDemoFileHeader final :
   void _internal_set_build_num(int32_t value);
   public:
 
+  // optional int32 server_start_tick = 15;
+  bool has_server_start_tick() const;
+  private:
+  bool _internal_has_server_start_tick() const;
+  public:
+  void clear_server_start_tick();
+  int32_t server_start_tick() const;
+  void set_server_start_tick(int32_t value);
+  private:
+  int32_t _internal_server_start_tick() const;
+  void _internal_set_server_start_tick(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CDemoFileHeader)
  private:
   class _Internal;
@@ -578,13 +610,14 @@ class CDemoFileHeader final :
     bool allow_clientside_entities_;
     bool allow_clientside_particles_;
     int32_t build_num_;
+    int32_t server_start_tick_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_demo_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo_CPlayerInfo final :
+class CGameInfo_CDotaGameInfo_CPlayerInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo.CPlayerInfo) */ {
  public:
   inline CGameInfo_CDotaGameInfo_CPlayerInfo() : CGameInfo_CDotaGameInfo_CPlayerInfo(nullptr) {}
@@ -814,7 +847,7 @@ class CGameInfo_CDotaGameInfo_CPlayerInfo final :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo_CHeroSelectEvent final :
+class CGameInfo_CDotaGameInfo_CHeroSelectEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo.CHeroSelectEvent) */ {
  public:
   inline CGameInfo_CDotaGameInfo_CHeroSelectEvent() : CGameInfo_CDotaGameInfo_CHeroSelectEvent(nullptr) {}
@@ -972,17 +1005,17 @@ class CGameInfo_CDotaGameInfo_CHeroSelectEvent final :
   void _internal_set_team(uint32_t value);
   public:
 
-  // optional uint32 hero_id = 3;
+  // optional int32 hero_id = 3;
   bool has_hero_id() const;
   private:
   bool _internal_has_hero_id() const;
   public:
   void clear_hero_id();
-  uint32_t hero_id() const;
-  void set_hero_id(uint32_t value);
+  int32_t hero_id() const;
+  void set_hero_id(int32_t value);
   private:
-  uint32_t _internal_hero_id() const;
-  void _internal_set_hero_id(uint32_t value);
+  int32_t _internal_hero_id() const;
+  void _internal_set_hero_id(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:CGameInfo.CDotaGameInfo.CHeroSelectEvent)
@@ -997,14 +1030,14 @@ class CGameInfo_CDotaGameInfo_CHeroSelectEvent final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     bool is_pick_;
     uint32_t team_;
-    uint32_t hero_id_;
+    int32_t hero_id_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_demo_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo final :
+class CGameInfo_CDotaGameInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo) */ {
  public:
   inline CGameInfo_CDotaGameInfo() : CGameInfo_CDotaGameInfo(nullptr) {}
@@ -1337,7 +1370,175 @@ class CGameInfo_CDotaGameInfo final :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo final :
+class CGameInfo_CCSGameInfo :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CCSGameInfo) */ {
+ public:
+  inline CGameInfo_CCSGameInfo() : CGameInfo_CCSGameInfo(nullptr) {}
+  ~CGameInfo_CCSGameInfo() override;
+  explicit PROTOBUF_CONSTEXPR CGameInfo_CCSGameInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CGameInfo_CCSGameInfo(const CGameInfo_CCSGameInfo& from);
+  CGameInfo_CCSGameInfo(CGameInfo_CCSGameInfo&& from) noexcept
+    : CGameInfo_CCSGameInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline CGameInfo_CCSGameInfo& operator=(const CGameInfo_CCSGameInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CGameInfo_CCSGameInfo& operator=(CGameInfo_CCSGameInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CGameInfo_CCSGameInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CGameInfo_CCSGameInfo* internal_default_instance() {
+    return reinterpret_cast<const CGameInfo_CCSGameInfo*>(
+               &_CGameInfo_CCSGameInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(CGameInfo_CCSGameInfo& a, CGameInfo_CCSGameInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CGameInfo_CCSGameInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CGameInfo_CCSGameInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CGameInfo_CCSGameInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CGameInfo_CCSGameInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CGameInfo_CCSGameInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CGameInfo_CCSGameInfo& from) {
+    CGameInfo_CCSGameInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CGameInfo_CCSGameInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CGameInfo.CCSGameInfo";
+  }
+  protected:
+  explicit CGameInfo_CCSGameInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRoundStartTicksFieldNumber = 1,
+  };
+  // repeated int32 round_start_ticks = 1;
+  int round_start_ticks_size() const;
+  private:
+  int _internal_round_start_ticks_size() const;
+  public:
+  void clear_round_start_ticks();
+  private:
+  int32_t _internal_round_start_ticks(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_round_start_ticks() const;
+  void _internal_add_round_start_ticks(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_round_start_ticks();
+  public:
+  int32_t round_start_ticks(int index) const;
+  void set_round_start_ticks(int index, int32_t value);
+  void add_round_start_ticks(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      round_start_ticks() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_round_start_ticks();
+
+  // @@protoc_insertion_point(class_scope:CGameInfo.CCSGameInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > round_start_ticks_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CGameInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo) */ {
  public:
   inline CGameInfo() : CGameInfo(nullptr) {}
@@ -1392,7 +1593,7 @@ class CGameInfo final :
                &_CGameInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    5;
 
   friend void swap(CGameInfo& a, CGameInfo& b) {
     a.Swap(&b);
@@ -1463,11 +1664,13 @@ class CGameInfo final :
   // nested types ----------------------------------------------------
 
   typedef CGameInfo_CDotaGameInfo CDotaGameInfo;
+  typedef CGameInfo_CCSGameInfo CCSGameInfo;
 
   // accessors -------------------------------------------------------
 
   enum : int {
     kDotaFieldNumber = 4,
+    kCsFieldNumber = 5,
   };
   // optional .CGameInfo.CDotaGameInfo dota = 4;
   bool has_dota() const;
@@ -1487,6 +1690,24 @@ class CGameInfo final :
       ::CGameInfo_CDotaGameInfo* dota);
   ::CGameInfo_CDotaGameInfo* unsafe_arena_release_dota();
 
+  // optional .CGameInfo.CCSGameInfo cs = 5;
+  bool has_cs() const;
+  private:
+  bool _internal_has_cs() const;
+  public:
+  void clear_cs();
+  const ::CGameInfo_CCSGameInfo& cs() const;
+  PROTOBUF_NODISCARD ::CGameInfo_CCSGameInfo* release_cs();
+  ::CGameInfo_CCSGameInfo* mutable_cs();
+  void set_allocated_cs(::CGameInfo_CCSGameInfo* cs);
+  private:
+  const ::CGameInfo_CCSGameInfo& _internal_cs() const;
+  ::CGameInfo_CCSGameInfo* _internal_mutable_cs();
+  public:
+  void unsafe_arena_set_allocated_cs(
+      ::CGameInfo_CCSGameInfo* cs);
+  ::CGameInfo_CCSGameInfo* unsafe_arena_release_cs();
+
   // @@protoc_insertion_point(class_scope:CGameInfo)
  private:
   class _Internal;
@@ -1498,13 +1719,14 @@ class CGameInfo final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::CGameInfo_CDotaGameInfo* dota_;
+    ::CGameInfo_CCSGameInfo* cs_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_demo_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CDemoFileInfo final :
+class CDemoFileInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFileInfo) */ {
  public:
   inline CDemoFileInfo() : CDemoFileInfo(nullptr) {}
@@ -1559,7 +1781,7 @@ class CDemoFileInfo final :
                &_CDemoFileInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(CDemoFileInfo& a, CDemoFileInfo& b) {
     a.Swap(&b);
@@ -1714,7 +1936,7 @@ class CDemoFileInfo final :
 };
 // -------------------------------------------------------------------
 
-class CDemoPacket final :
+class CDemoPacket :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoPacket) */ {
  public:
   inline CDemoPacket() : CDemoPacket(nullptr) {}
@@ -1769,7 +1991,7 @@ class CDemoPacket final :
                &_CDemoPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(CDemoPacket& a, CDemoPacket& b) {
     a.Swap(&b);
@@ -1879,7 +2101,7 @@ class CDemoPacket final :
 };
 // -------------------------------------------------------------------
 
-class CDemoFullPacket final :
+class CDemoFullPacket :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFullPacket) */ {
  public:
   inline CDemoFullPacket() : CDemoFullPacket(nullptr) {}
@@ -1934,7 +2156,7 @@ class CDemoFullPacket final :
                &_CDemoFullPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(CDemoFullPacket& a, CDemoFullPacket& b) {
     a.Swap(&b);
@@ -2064,7 +2286,7 @@ class CDemoFullPacket final :
 };
 // -------------------------------------------------------------------
 
-class CDemoSaveGame final :
+class CDemoSaveGame :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSaveGame) */ {
  public:
   inline CDemoSaveGame() : CDemoSaveGame(nullptr) {}
@@ -2119,7 +2341,7 @@ class CDemoSaveGame final :
                &_CDemoSaveGame_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(CDemoSaveGame& a, CDemoSaveGame& b) {
     a.Swap(&b);
@@ -2274,7 +2496,7 @@ class CDemoSaveGame final :
 };
 // -------------------------------------------------------------------
 
-class CDemoSyncTick final :
+class CDemoSyncTick :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CDemoSyncTick) */ {
  public:
   inline CDemoSyncTick() : CDemoSyncTick(nullptr) {}
@@ -2328,7 +2550,7 @@ class CDemoSyncTick final :
                &_CDemoSyncTick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(CDemoSyncTick& a, CDemoSyncTick& b) {
     a.Swap(&b);
@@ -2399,7 +2621,7 @@ class CDemoSyncTick final :
 };
 // -------------------------------------------------------------------
 
-class CDemoConsoleCmd final :
+class CDemoConsoleCmd :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoConsoleCmd) */ {
  public:
   inline CDemoConsoleCmd() : CDemoConsoleCmd(nullptr) {}
@@ -2454,7 +2676,7 @@ class CDemoConsoleCmd final :
                &_CDemoConsoleCmd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(CDemoConsoleCmd& a, CDemoConsoleCmd& b) {
     a.Swap(&b);
@@ -2564,7 +2786,7 @@ class CDemoConsoleCmd final :
 };
 // -------------------------------------------------------------------
 
-class CDemoSendTables final :
+class CDemoSendTables :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSendTables) */ {
  public:
   inline CDemoSendTables() : CDemoSendTables(nullptr) {}
@@ -2619,7 +2841,7 @@ class CDemoSendTables final :
                &_CDemoSendTables_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(CDemoSendTables& a, CDemoSendTables& b) {
     a.Swap(&b);
@@ -2729,7 +2951,7 @@ class CDemoSendTables final :
 };
 // -------------------------------------------------------------------
 
-class CDemoClassInfo_class_t final :
+class CDemoClassInfo_class_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoClassInfo.class_t) */ {
  public:
   inline CDemoClassInfo_class_t() : CDemoClassInfo_class_t(nullptr) {}
@@ -2784,7 +3006,7 @@ class CDemoClassInfo_class_t final :
                &_CDemoClassInfo_class_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(CDemoClassInfo_class_t& a, CDemoClassInfo_class_t& b) {
     a.Swap(&b);
@@ -2929,7 +3151,7 @@ class CDemoClassInfo_class_t final :
 };
 // -------------------------------------------------------------------
 
-class CDemoClassInfo final :
+class CDemoClassInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoClassInfo) */ {
  public:
   inline CDemoClassInfo() : CDemoClassInfo(nullptr) {}
@@ -2984,7 +3206,7 @@ class CDemoClassInfo final :
                &_CDemoClassInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(CDemoClassInfo& a, CDemoClassInfo& b) {
     a.Swap(&b);
@@ -3095,7 +3317,7 @@ class CDemoClassInfo final :
 };
 // -------------------------------------------------------------------
 
-class CDemoCustomData final :
+class CDemoCustomData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoCustomData) */ {
  public:
   inline CDemoCustomData() : CDemoCustomData(nullptr) {}
@@ -3150,7 +3372,7 @@ class CDemoCustomData final :
                &_CDemoCustomData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    15;
 
   friend void swap(CDemoCustomData& a, CDemoCustomData& b) {
     a.Swap(&b);
@@ -3275,7 +3497,7 @@ class CDemoCustomData final :
 };
 // -------------------------------------------------------------------
 
-class CDemoCustomDataCallbacks final :
+class CDemoCustomDataCallbacks :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoCustomDataCallbacks) */ {
  public:
   inline CDemoCustomDataCallbacks() : CDemoCustomDataCallbacks(nullptr) {}
@@ -3330,7 +3552,7 @@ class CDemoCustomDataCallbacks final :
                &_CDemoCustomDataCallbacks_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    16;
 
   friend void swap(CDemoCustomDataCallbacks& a, CDemoCustomDataCallbacks& b) {
     a.Swap(&b);
@@ -3445,7 +3667,202 @@ class CDemoCustomDataCallbacks final :
 };
 // -------------------------------------------------------------------
 
-class CDemoAnimationData final :
+class CDemoAnimationHeader :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoAnimationHeader) */ {
+ public:
+  inline CDemoAnimationHeader() : CDemoAnimationHeader(nullptr) {}
+  ~CDemoAnimationHeader() override;
+  explicit PROTOBUF_CONSTEXPR CDemoAnimationHeader(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CDemoAnimationHeader(const CDemoAnimationHeader& from);
+  CDemoAnimationHeader(CDemoAnimationHeader&& from) noexcept
+    : CDemoAnimationHeader() {
+    *this = ::std::move(from);
+  }
+
+  inline CDemoAnimationHeader& operator=(const CDemoAnimationHeader& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CDemoAnimationHeader& operator=(CDemoAnimationHeader&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CDemoAnimationHeader& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CDemoAnimationHeader* internal_default_instance() {
+    return reinterpret_cast<const CDemoAnimationHeader*>(
+               &_CDemoAnimationHeader_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(CDemoAnimationHeader& a, CDemoAnimationHeader& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CDemoAnimationHeader* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CDemoAnimationHeader* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CDemoAnimationHeader* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CDemoAnimationHeader>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CDemoAnimationHeader& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CDemoAnimationHeader& from) {
+    CDemoAnimationHeader::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CDemoAnimationHeader* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CDemoAnimationHeader";
+  }
+  protected:
+  explicit CDemoAnimationHeader(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDataFieldNumber = 3,
+    kEntityIdFieldNumber = 1,
+    kTickFieldNumber = 2,
+  };
+  // optional bytes data = 3;
+  bool has_data() const;
+  private:
+  bool _internal_has_data() const;
+  public:
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // optional sint32 entity_id = 1;
+  bool has_entity_id() const;
+  private:
+  bool _internal_has_entity_id() const;
+  public:
+  void clear_entity_id();
+  int32_t entity_id() const;
+  void set_entity_id(int32_t value);
+  private:
+  int32_t _internal_entity_id() const;
+  void _internal_set_entity_id(int32_t value);
+  public:
+
+  // optional int32 tick = 2;
+  bool has_tick() const;
+  private:
+  bool _internal_has_tick() const;
+  public:
+  void clear_tick();
+  int32_t tick() const;
+  void set_tick(int32_t value);
+  private:
+  int32_t _internal_tick() const;
+  void _internal_set_tick(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CDemoAnimationHeader)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    int32_t entity_id_;
+    int32_t tick_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CDemoAnimationData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoAnimationData) */ {
  public:
   inline CDemoAnimationData() : CDemoAnimationData(nullptr) {}
@@ -3500,7 +3917,7 @@ class CDemoAnimationData final :
                &_CDemoAnimationData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    18;
 
   friend void swap(CDemoAnimationData& a, CDemoAnimationData& b) {
     a.Swap(&b);
@@ -3670,7 +4087,7 @@ class CDemoAnimationData final :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables_items_t final :
+class CDemoStringTables_items_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables.items_t) */ {
  public:
   inline CDemoStringTables_items_t() : CDemoStringTables_items_t(nullptr) {}
@@ -3725,7 +4142,7 @@ class CDemoStringTables_items_t final :
                &_CDemoStringTables_items_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    19;
 
   friend void swap(CDemoStringTables_items_t& a, CDemoStringTables_items_t& b) {
     a.Swap(&b);
@@ -3855,7 +4272,7 @@ class CDemoStringTables_items_t final :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables_table_t final :
+class CDemoStringTables_table_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables.table_t) */ {
  public:
   inline CDemoStringTables_table_t() : CDemoStringTables_table_t(nullptr) {}
@@ -3910,7 +4327,7 @@ class CDemoStringTables_table_t final :
                &_CDemoStringTables_table_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    20;
 
   friend void swap(CDemoStringTables_table_t& a, CDemoStringTables_table_t& b) {
     a.Swap(&b);
@@ -4075,7 +4492,7 @@ class CDemoStringTables_table_t final :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables final :
+class CDemoStringTables :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables) */ {
  public:
   inline CDemoStringTables() : CDemoStringTables(nullptr) {}
@@ -4130,7 +4547,7 @@ class CDemoStringTables final :
                &_CDemoStringTables_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    21;
 
   friend void swap(CDemoStringTables& a, CDemoStringTables& b) {
     a.Swap(&b);
@@ -4242,7 +4659,7 @@ class CDemoStringTables final :
 };
 // -------------------------------------------------------------------
 
-class CDemoStop final :
+class CDemoStop :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CDemoStop) */ {
  public:
   inline CDemoStop() : CDemoStop(nullptr) {}
@@ -4296,7 +4713,7 @@ class CDemoStop final :
                &_CDemoStop_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    22;
 
   friend void swap(CDemoStop& a, CDemoStop& b) {
     a.Swap(&b);
@@ -4367,7 +4784,7 @@ class CDemoStop final :
 };
 // -------------------------------------------------------------------
 
-class CDemoUserCmd final :
+class CDemoUserCmd :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoUserCmd) */ {
  public:
   inline CDemoUserCmd() : CDemoUserCmd(nullptr) {}
@@ -4422,7 +4839,7 @@ class CDemoUserCmd final :
                &_CDemoUserCmd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    23;
 
   friend void swap(CDemoUserCmd& a, CDemoUserCmd& b) {
     a.Swap(&b);
@@ -4547,7 +4964,7 @@ class CDemoUserCmd final :
 };
 // -------------------------------------------------------------------
 
-class CDemoSpawnGroups final :
+class CDemoSpawnGroups :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSpawnGroups) */ {
  public:
   inline CDemoSpawnGroups() : CDemoSpawnGroups(nullptr) {}
@@ -4602,7 +5019,7 @@ class CDemoSpawnGroups final :
                &_CDemoSpawnGroups_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    24;
 
   friend void swap(CDemoSpawnGroups& a, CDemoSpawnGroups& b) {
     a.Swap(&b);
@@ -4711,6 +5128,368 @@ class CDemoSpawnGroups final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> msgs_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CDemoRecovery_DemoInitialSpawnGroupEntry :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoRecovery.DemoInitialSpawnGroupEntry) */ {
+ public:
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry() : CDemoRecovery_DemoInitialSpawnGroupEntry(nullptr) {}
+  ~CDemoRecovery_DemoInitialSpawnGroupEntry() override;
+  explicit PROTOBUF_CONSTEXPR CDemoRecovery_DemoInitialSpawnGroupEntry(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CDemoRecovery_DemoInitialSpawnGroupEntry(const CDemoRecovery_DemoInitialSpawnGroupEntry& from);
+  CDemoRecovery_DemoInitialSpawnGroupEntry(CDemoRecovery_DemoInitialSpawnGroupEntry&& from) noexcept
+    : CDemoRecovery_DemoInitialSpawnGroupEntry() {
+    *this = ::std::move(from);
+  }
+
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry& operator=(const CDemoRecovery_DemoInitialSpawnGroupEntry& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry& operator=(CDemoRecovery_DemoInitialSpawnGroupEntry&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CDemoRecovery_DemoInitialSpawnGroupEntry& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CDemoRecovery_DemoInitialSpawnGroupEntry* internal_default_instance() {
+    return reinterpret_cast<const CDemoRecovery_DemoInitialSpawnGroupEntry*>(
+               &_CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    25;
+
+  friend void swap(CDemoRecovery_DemoInitialSpawnGroupEntry& a, CDemoRecovery_DemoInitialSpawnGroupEntry& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CDemoRecovery_DemoInitialSpawnGroupEntry* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CDemoRecovery_DemoInitialSpawnGroupEntry* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CDemoRecovery_DemoInitialSpawnGroupEntry* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CDemoRecovery_DemoInitialSpawnGroupEntry>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CDemoRecovery_DemoInitialSpawnGroupEntry& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CDemoRecovery_DemoInitialSpawnGroupEntry& from) {
+    CDemoRecovery_DemoInitialSpawnGroupEntry::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CDemoRecovery_DemoInitialSpawnGroupEntry* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CDemoRecovery.DemoInitialSpawnGroupEntry";
+  }
+  protected:
+  explicit CDemoRecovery_DemoInitialSpawnGroupEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSpawngrouphandleFieldNumber = 1,
+    kWasCreatedFieldNumber = 2,
+  };
+  // optional uint32 spawngrouphandle = 1;
+  bool has_spawngrouphandle() const;
+  private:
+  bool _internal_has_spawngrouphandle() const;
+  public:
+  void clear_spawngrouphandle();
+  uint32_t spawngrouphandle() const;
+  void set_spawngrouphandle(uint32_t value);
+  private:
+  uint32_t _internal_spawngrouphandle() const;
+  void _internal_set_spawngrouphandle(uint32_t value);
+  public:
+
+  // optional bool was_created = 2;
+  bool has_was_created() const;
+  private:
+  bool _internal_has_was_created() const;
+  public:
+  void clear_was_created();
+  bool was_created() const;
+  void set_was_created(bool value);
+  private:
+  bool _internal_was_created() const;
+  void _internal_set_was_created(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CDemoRecovery.DemoInitialSpawnGroupEntry)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t spawngrouphandle_;
+    bool was_created_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CDemoRecovery :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoRecovery) */ {
+ public:
+  inline CDemoRecovery() : CDemoRecovery(nullptr) {}
+  ~CDemoRecovery() override;
+  explicit PROTOBUF_CONSTEXPR CDemoRecovery(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CDemoRecovery(const CDemoRecovery& from);
+  CDemoRecovery(CDemoRecovery&& from) noexcept
+    : CDemoRecovery() {
+    *this = ::std::move(from);
+  }
+
+  inline CDemoRecovery& operator=(const CDemoRecovery& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CDemoRecovery& operator=(CDemoRecovery&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CDemoRecovery& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CDemoRecovery* internal_default_instance() {
+    return reinterpret_cast<const CDemoRecovery*>(
+               &_CDemoRecovery_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    26;
+
+  friend void swap(CDemoRecovery& a, CDemoRecovery& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CDemoRecovery* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CDemoRecovery* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CDemoRecovery* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CDemoRecovery>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CDemoRecovery& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CDemoRecovery& from) {
+    CDemoRecovery::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CDemoRecovery* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CDemoRecovery";
+  }
+  protected:
+  explicit CDemoRecovery(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CDemoRecovery_DemoInitialSpawnGroupEntry DemoInitialSpawnGroupEntry;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSpawnGroupMessageFieldNumber = 2,
+    kInitialSpawnGroupFieldNumber = 1,
+  };
+  // optional bytes spawn_group_message = 2;
+  bool has_spawn_group_message() const;
+  private:
+  bool _internal_has_spawn_group_message() const;
+  public:
+  void clear_spawn_group_message();
+  const std::string& spawn_group_message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_spawn_group_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_spawn_group_message();
+  PROTOBUF_NODISCARD std::string* release_spawn_group_message();
+  void set_allocated_spawn_group_message(std::string* spawn_group_message);
+  private:
+  const std::string& _internal_spawn_group_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_spawn_group_message(const std::string& value);
+  std::string* _internal_mutable_spawn_group_message();
+  public:
+
+  // optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+  bool has_initial_spawn_group() const;
+  private:
+  bool _internal_has_initial_spawn_group() const;
+  public:
+  void clear_initial_spawn_group();
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry& initial_spawn_group() const;
+  PROTOBUF_NODISCARD ::CDemoRecovery_DemoInitialSpawnGroupEntry* release_initial_spawn_group();
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* mutable_initial_spawn_group();
+  void set_allocated_initial_spawn_group(::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group);
+  private:
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry& _internal_initial_spawn_group() const;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* _internal_mutable_initial_spawn_group();
+  public:
+  void unsafe_arena_set_allocated_initial_spawn_group(
+      ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group);
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* unsafe_arena_release_initial_spawn_group();
+
+  // @@protoc_insertion_point(class_scope:CDemoRecovery)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr spawn_group_message_;
+    ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_demo_2eproto;
@@ -5478,6 +6257,34 @@ inline void CDemoFileHeader::set_allocated_game(std::string* game) {
   // @@protoc_insertion_point(field_set_allocated:CDemoFileHeader.game)
 }
 
+// optional int32 server_start_tick = 15;
+inline bool CDemoFileHeader::_internal_has_server_start_tick() const {
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CDemoFileHeader::has_server_start_tick() const {
+  return _internal_has_server_start_tick();
+}
+inline void CDemoFileHeader::clear_server_start_tick() {
+  _impl_.server_start_tick_ = 0;
+  _impl_._has_bits_[0] &= ~0x00004000u;
+}
+inline int32_t CDemoFileHeader::_internal_server_start_tick() const {
+  return _impl_.server_start_tick_;
+}
+inline int32_t CDemoFileHeader::server_start_tick() const {
+  // @@protoc_insertion_point(field_get:CDemoFileHeader.server_start_tick)
+  return _internal_server_start_tick();
+}
+inline void CDemoFileHeader::_internal_set_server_start_tick(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_.server_start_tick_ = value;
+}
+inline void CDemoFileHeader::set_server_start_tick(int32_t value) {
+  _internal_set_server_start_tick(value);
+  // @@protoc_insertion_point(field_set:CDemoFileHeader.server_start_tick)
+}
+
 // -------------------------------------------------------------------
 
 // CGameInfo_CDotaGameInfo_CPlayerInfo
@@ -5762,7 +6569,7 @@ inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::set_team(uint32_t value) {
   // @@protoc_insertion_point(field_set:CGameInfo.CDotaGameInfo.CHeroSelectEvent.team)
 }
 
-// optional uint32 hero_id = 3;
+// optional int32 hero_id = 3;
 inline bool CGameInfo_CDotaGameInfo_CHeroSelectEvent::_internal_has_hero_id() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -5771,21 +6578,21 @@ inline bool CGameInfo_CDotaGameInfo_CHeroSelectEvent::has_hero_id() const {
   return _internal_has_hero_id();
 }
 inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::clear_hero_id() {
-  _impl_.hero_id_ = 0u;
+  _impl_.hero_id_ = 0;
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline uint32_t CGameInfo_CDotaGameInfo_CHeroSelectEvent::_internal_hero_id() const {
+inline int32_t CGameInfo_CDotaGameInfo_CHeroSelectEvent::_internal_hero_id() const {
   return _impl_.hero_id_;
 }
-inline uint32_t CGameInfo_CDotaGameInfo_CHeroSelectEvent::hero_id() const {
+inline int32_t CGameInfo_CDotaGameInfo_CHeroSelectEvent::hero_id() const {
   // @@protoc_insertion_point(field_get:CGameInfo.CDotaGameInfo.CHeroSelectEvent.hero_id)
   return _internal_hero_id();
 }
-inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::_internal_set_hero_id(uint32_t value) {
+inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::_internal_set_hero_id(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.hero_id_ = value;
 }
-inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::set_hero_id(uint32_t value) {
+inline void CGameInfo_CDotaGameInfo_CHeroSelectEvent::set_hero_id(int32_t value) {
   _internal_set_hero_id(value);
   // @@protoc_insertion_point(field_set:CGameInfo.CDotaGameInfo.CHeroSelectEvent.hero_id)
 }
@@ -6208,6 +7015,57 @@ inline void CGameInfo_CDotaGameInfo::set_end_time(uint32_t value) {
 
 // -------------------------------------------------------------------
 
+// CGameInfo_CCSGameInfo
+
+// repeated int32 round_start_ticks = 1;
+inline int CGameInfo_CCSGameInfo::_internal_round_start_ticks_size() const {
+  return _impl_.round_start_ticks_.size();
+}
+inline int CGameInfo_CCSGameInfo::round_start_ticks_size() const {
+  return _internal_round_start_ticks_size();
+}
+inline void CGameInfo_CCSGameInfo::clear_round_start_ticks() {
+  _impl_.round_start_ticks_.Clear();
+}
+inline int32_t CGameInfo_CCSGameInfo::_internal_round_start_ticks(int index) const {
+  return _impl_.round_start_ticks_.Get(index);
+}
+inline int32_t CGameInfo_CCSGameInfo::round_start_ticks(int index) const {
+  // @@protoc_insertion_point(field_get:CGameInfo.CCSGameInfo.round_start_ticks)
+  return _internal_round_start_ticks(index);
+}
+inline void CGameInfo_CCSGameInfo::set_round_start_ticks(int index, int32_t value) {
+  _impl_.round_start_ticks_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CGameInfo.CCSGameInfo.round_start_ticks)
+}
+inline void CGameInfo_CCSGameInfo::_internal_add_round_start_ticks(int32_t value) {
+  _impl_.round_start_ticks_.Add(value);
+}
+inline void CGameInfo_CCSGameInfo::add_round_start_ticks(int32_t value) {
+  _internal_add_round_start_ticks(value);
+  // @@protoc_insertion_point(field_add:CGameInfo.CCSGameInfo.round_start_ticks)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CGameInfo_CCSGameInfo::_internal_round_start_ticks() const {
+  return _impl_.round_start_ticks_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CGameInfo_CCSGameInfo::round_start_ticks() const {
+  // @@protoc_insertion_point(field_list:CGameInfo.CCSGameInfo.round_start_ticks)
+  return _internal_round_start_ticks();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CGameInfo_CCSGameInfo::_internal_mutable_round_start_ticks() {
+  return &_impl_.round_start_ticks_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CGameInfo_CCSGameInfo::mutable_round_start_ticks() {
+  // @@protoc_insertion_point(field_mutable_list:CGameInfo.CCSGameInfo.round_start_ticks)
+  return _internal_mutable_round_start_ticks();
+}
+
+// -------------------------------------------------------------------
+
 // CGameInfo
 
 // optional .CGameInfo.CDotaGameInfo dota = 4;
@@ -6298,6 +7156,96 @@ inline void CGameInfo::set_allocated_dota(::CGameInfo_CDotaGameInfo* dota) {
   }
   _impl_.dota_ = dota;
   // @@protoc_insertion_point(field_set_allocated:CGameInfo.dota)
+}
+
+// optional .CGameInfo.CCSGameInfo cs = 5;
+inline bool CGameInfo::_internal_has_cs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.cs_ != nullptr);
+  return value;
+}
+inline bool CGameInfo::has_cs() const {
+  return _internal_has_cs();
+}
+inline void CGameInfo::clear_cs() {
+  if (_impl_.cs_ != nullptr) _impl_.cs_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CGameInfo_CCSGameInfo& CGameInfo::_internal_cs() const {
+  const ::CGameInfo_CCSGameInfo* p = _impl_.cs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CGameInfo_CCSGameInfo&>(
+      ::_CGameInfo_CCSGameInfo_default_instance_);
+}
+inline const ::CGameInfo_CCSGameInfo& CGameInfo::cs() const {
+  // @@protoc_insertion_point(field_get:CGameInfo.cs)
+  return _internal_cs();
+}
+inline void CGameInfo::unsafe_arena_set_allocated_cs(
+    ::CGameInfo_CCSGameInfo* cs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.cs_);
+  }
+  _impl_.cs_ = cs;
+  if (cs) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CGameInfo.cs)
+}
+inline ::CGameInfo_CCSGameInfo* CGameInfo::release_cs() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CGameInfo_CCSGameInfo* temp = _impl_.cs_;
+  _impl_.cs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CGameInfo_CCSGameInfo* CGameInfo::unsafe_arena_release_cs() {
+  // @@protoc_insertion_point(field_release:CGameInfo.cs)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CGameInfo_CCSGameInfo* temp = _impl_.cs_;
+  _impl_.cs_ = nullptr;
+  return temp;
+}
+inline ::CGameInfo_CCSGameInfo* CGameInfo::_internal_mutable_cs() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.cs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CGameInfo_CCSGameInfo>(GetArenaForAllocation());
+    _impl_.cs_ = p;
+  }
+  return _impl_.cs_;
+}
+inline ::CGameInfo_CCSGameInfo* CGameInfo::mutable_cs() {
+  ::CGameInfo_CCSGameInfo* _msg = _internal_mutable_cs();
+  // @@protoc_insertion_point(field_mutable:CGameInfo.cs)
+  return _msg;
+}
+inline void CGameInfo::set_allocated_cs(::CGameInfo_CCSGameInfo* cs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.cs_;
+  }
+  if (cs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(cs);
+    if (message_arena != submessage_arena) {
+      cs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, cs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.cs_ = cs;
+  // @@protoc_insertion_point(field_set_allocated:CGameInfo.cs)
 }
 
 // -------------------------------------------------------------------
@@ -7431,6 +8379,134 @@ CDemoCustomDataCallbacks::mutable_save_id() {
 
 // -------------------------------------------------------------------
 
+// CDemoAnimationHeader
+
+// optional sint32 entity_id = 1;
+inline bool CDemoAnimationHeader::_internal_has_entity_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CDemoAnimationHeader::has_entity_id() const {
+  return _internal_has_entity_id();
+}
+inline void CDemoAnimationHeader::clear_entity_id() {
+  _impl_.entity_id_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CDemoAnimationHeader::_internal_entity_id() const {
+  return _impl_.entity_id_;
+}
+inline int32_t CDemoAnimationHeader::entity_id() const {
+  // @@protoc_insertion_point(field_get:CDemoAnimationHeader.entity_id)
+  return _internal_entity_id();
+}
+inline void CDemoAnimationHeader::_internal_set_entity_id(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.entity_id_ = value;
+}
+inline void CDemoAnimationHeader::set_entity_id(int32_t value) {
+  _internal_set_entity_id(value);
+  // @@protoc_insertion_point(field_set:CDemoAnimationHeader.entity_id)
+}
+
+// optional int32 tick = 2;
+inline bool CDemoAnimationHeader::_internal_has_tick() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CDemoAnimationHeader::has_tick() const {
+  return _internal_has_tick();
+}
+inline void CDemoAnimationHeader::clear_tick() {
+  _impl_.tick_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CDemoAnimationHeader::_internal_tick() const {
+  return _impl_.tick_;
+}
+inline int32_t CDemoAnimationHeader::tick() const {
+  // @@protoc_insertion_point(field_get:CDemoAnimationHeader.tick)
+  return _internal_tick();
+}
+inline void CDemoAnimationHeader::_internal_set_tick(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.tick_ = value;
+}
+inline void CDemoAnimationHeader::set_tick(int32_t value) {
+  _internal_set_tick(value);
+  // @@protoc_insertion_point(field_set:CDemoAnimationHeader.tick)
+}
+
+// optional bytes data = 3;
+inline bool CDemoAnimationHeader::_internal_has_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CDemoAnimationHeader::has_data() const {
+  return _internal_has_data();
+}
+inline void CDemoAnimationHeader::clear_data() {
+  _impl_.data_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CDemoAnimationHeader::data() const {
+  // @@protoc_insertion_point(field_get:CDemoAnimationHeader.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CDemoAnimationHeader::set_data(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CDemoAnimationHeader.data)
+}
+inline std::string* CDemoAnimationHeader::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:CDemoAnimationHeader.data)
+  return _s;
+}
+inline const std::string& CDemoAnimationHeader::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void CDemoAnimationHeader::_internal_set_data(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CDemoAnimationHeader::_internal_mutable_data() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CDemoAnimationHeader::release_data() {
+  // @@protoc_insertion_point(field_release:CDemoAnimationHeader.data)
+  if (!_internal_has_data()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.data_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CDemoAnimationHeader::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CDemoAnimationHeader.data)
+}
+
+// -------------------------------------------------------------------
+
 // CDemoAnimationData
 
 // optional sint32 entity_id = 1;
@@ -8160,9 +9236,239 @@ CDemoSpawnGroups::mutable_msgs() {
   return &_impl_.msgs_;
 }
 
+// -------------------------------------------------------------------
+
+// CDemoRecovery_DemoInitialSpawnGroupEntry
+
+// optional uint32 spawngrouphandle = 1;
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_has_spawngrouphandle() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::has_spawngrouphandle() const {
+  return _internal_has_spawngrouphandle();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::clear_spawngrouphandle() {
+  _impl_.spawngrouphandle_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_spawngrouphandle() const {
+  return _impl_.spawngrouphandle_;
+}
+inline uint32_t CDemoRecovery_DemoInitialSpawnGroupEntry::spawngrouphandle() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.DemoInitialSpawnGroupEntry.spawngrouphandle)
+  return _internal_spawngrouphandle();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_set_spawngrouphandle(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.spawngrouphandle_ = value;
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::set_spawngrouphandle(uint32_t value) {
+  _internal_set_spawngrouphandle(value);
+  // @@protoc_insertion_point(field_set:CDemoRecovery.DemoInitialSpawnGroupEntry.spawngrouphandle)
+}
+
+// optional bool was_created = 2;
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_has_was_created() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::has_was_created() const {
+  return _internal_has_was_created();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::clear_was_created() {
+  _impl_.was_created_ = false;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_was_created() const {
+  return _impl_.was_created_;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::was_created() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.DemoInitialSpawnGroupEntry.was_created)
+  return _internal_was_created();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_set_was_created(bool value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.was_created_ = value;
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::set_was_created(bool value) {
+  _internal_set_was_created(value);
+  // @@protoc_insertion_point(field_set:CDemoRecovery.DemoInitialSpawnGroupEntry.was_created)
+}
+
+// -------------------------------------------------------------------
+
+// CDemoRecovery
+
+// optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+inline bool CDemoRecovery::_internal_has_initial_spawn_group() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.initial_spawn_group_ != nullptr);
+  return value;
+}
+inline bool CDemoRecovery::has_initial_spawn_group() const {
+  return _internal_has_initial_spawn_group();
+}
+inline void CDemoRecovery::clear_initial_spawn_group() {
+  if (_impl_.initial_spawn_group_ != nullptr) _impl_.initial_spawn_group_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CDemoRecovery_DemoInitialSpawnGroupEntry& CDemoRecovery::_internal_initial_spawn_group() const {
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry* p = _impl_.initial_spawn_group_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CDemoRecovery_DemoInitialSpawnGroupEntry&>(
+      ::_CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_);
+}
+inline const ::CDemoRecovery_DemoInitialSpawnGroupEntry& CDemoRecovery::initial_spawn_group() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.initial_spawn_group)
+  return _internal_initial_spawn_group();
+}
+inline void CDemoRecovery::unsafe_arena_set_allocated_initial_spawn_group(
+    ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.initial_spawn_group_);
+  }
+  _impl_.initial_spawn_group_ = initial_spawn_group;
+  if (initial_spawn_group) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CDemoRecovery.initial_spawn_group)
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::release_initial_spawn_group() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* temp = _impl_.initial_spawn_group_;
+  _impl_.initial_spawn_group_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::unsafe_arena_release_initial_spawn_group() {
+  // @@protoc_insertion_point(field_release:CDemoRecovery.initial_spawn_group)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* temp = _impl_.initial_spawn_group_;
+  _impl_.initial_spawn_group_ = nullptr;
+  return temp;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::_internal_mutable_initial_spawn_group() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.initial_spawn_group_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CDemoRecovery_DemoInitialSpawnGroupEntry>(GetArenaForAllocation());
+    _impl_.initial_spawn_group_ = p;
+  }
+  return _impl_.initial_spawn_group_;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::mutable_initial_spawn_group() {
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* _msg = _internal_mutable_initial_spawn_group();
+  // @@protoc_insertion_point(field_mutable:CDemoRecovery.initial_spawn_group)
+  return _msg;
+}
+inline void CDemoRecovery::set_allocated_initial_spawn_group(::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.initial_spawn_group_;
+  }
+  if (initial_spawn_group) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(initial_spawn_group);
+    if (message_arena != submessage_arena) {
+      initial_spawn_group = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, initial_spawn_group, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.initial_spawn_group_ = initial_spawn_group;
+  // @@protoc_insertion_point(field_set_allocated:CDemoRecovery.initial_spawn_group)
+}
+
+// optional bytes spawn_group_message = 2;
+inline bool CDemoRecovery::_internal_has_spawn_group_message() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CDemoRecovery::has_spawn_group_message() const {
+  return _internal_has_spawn_group_message();
+}
+inline void CDemoRecovery::clear_spawn_group_message() {
+  _impl_.spawn_group_message_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CDemoRecovery::spawn_group_message() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.spawn_group_message)
+  return _internal_spawn_group_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CDemoRecovery::set_spawn_group_message(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.spawn_group_message_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CDemoRecovery.spawn_group_message)
+}
+inline std::string* CDemoRecovery::mutable_spawn_group_message() {
+  std::string* _s = _internal_mutable_spawn_group_message();
+  // @@protoc_insertion_point(field_mutable:CDemoRecovery.spawn_group_message)
+  return _s;
+}
+inline const std::string& CDemoRecovery::_internal_spawn_group_message() const {
+  return _impl_.spawn_group_message_.Get();
+}
+inline void CDemoRecovery::_internal_set_spawn_group_message(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.spawn_group_message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CDemoRecovery::_internal_mutable_spawn_group_message() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.spawn_group_message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CDemoRecovery::release_spawn_group_message() {
+  // @@protoc_insertion_point(field_release:CDemoRecovery.spawn_group_message)
+  if (!_internal_has_spawn_group_message()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.spawn_group_message_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.spawn_group_message_.IsDefault()) {
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CDemoRecovery::set_allocated_spawn_group_message(std::string* spawn_group_message) {
+  if (spawn_group_message != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.spawn_group_message_.SetAllocated(spawn_group_message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.spawn_group_message_.IsDefault()) {
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CDemoRecovery.spawn_group_message)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

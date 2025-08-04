@@ -10,11 +10,16 @@ message CSubtickMoveStep {
 	optional uint64 button = 1;
 	optional bool pressed = 2;
 	optional float when = 3;
+	optional float analog_forward_delta = 4;
+	optional float analog_left_delta = 5;
+	optional float analog_pitch_delta = 6;
+	optional float analog_yaw_delta = 7;
 }
 
 message CBaseUserCmdPB {
-	optional int32 command_number = 1;
-	optional int32 tick_count = 2;
+	optional int32 legacy_command_number = 1;
+	optional int32 client_tick = 2;
+	optional uint32 prediction_offset_ticks_x256 = 17;
 	optional .CInButtonStatePB buttons_pb = 3;
 	optional .CMsgQAngle viewangles = 4;
 	optional float forwardmove = 5;
@@ -25,7 +30,6 @@ message CBaseUserCmdPB {
 	optional int32 random_seed = 10;
 	optional int32 mousedx = 11;
 	optional int32 mousedy = 12;
-	optional bool hasbeenpredicted = 13;
 	optional uint32 pawn_entity_handle = 14 [default = 16777215];
 	repeated .CSubtickMoveStep subtick_moves = 18;
 	optional bytes move_crc = 19;

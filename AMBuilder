@@ -33,6 +33,8 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
+	os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8'),
+	os.path.join(builder.sourcePath, 'protobuf', 'generated')
   ]
 
   target_folder = 'Debug' if builder.options.debug else 'Release'

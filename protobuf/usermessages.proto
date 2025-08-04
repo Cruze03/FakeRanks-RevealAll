@@ -19,6 +19,7 @@ enum EBaseUserMessages {
 	UM_SayTextChannel = 119;
 	UM_Shake = 120;
 	UM_ShakeDir = 121;
+	UM_WaterShake = 122;
 	UM_TextMsg = 124;
 	UM_ScreenTilt = 125;
 	UM_VoiceMask = 128;
@@ -36,7 +37,6 @@ enum EBaseUserMessages {
 	UM_AnimGraphUpdate = 149;
 	UM_HapticsManagerPulse = 150;
 	UM_HapticsManagerEffect = 151;
-	UM_CommandQueueState = 152;
 	UM_UpdateCssClasses = 153;
 	UM_ServerFrameTime = 154;
 	UM_LagCompensationError = 155;
@@ -49,6 +49,8 @@ enum EBaseUserMessages {
 	UM_RequestDiagnostic = 162;
 	UM_DiagnosticResponse = 163;
 	UM_ExtraUserData = 164;
+	UM_NotifyResponseFound = 165;
+	UM_PlayResponseConditional = 166;
 	UM_MAX_BASE = 200;
 }
 
@@ -100,6 +102,15 @@ enum PARTICLE_MESSAGE {
 	GAME_PARTICLE_MANAGER_EVENT_UPDATE_TRANSFORM = 27;
 	GAME_PARTICLE_MANAGER_EVENT_FREEZE_TRANSITION_OVERRIDE = 28;
 	GAME_PARTICLE_MANAGER_EVENT_FREEZE_INVOLVING = 29;
+	GAME_PARTICLE_MANAGER_EVENT_ADD_MODELLIST_OVERRIDE_ELEMENT = 30;
+	GAME_PARTICLE_MANAGER_EVENT_CLEAR_MODELLIST_OVERRIDE = 31;
+	GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYSICS_SIM = 32;
+	GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM = 33;
+	GAME_PARTICLE_MANAGER_EVENT_SET_VDATA = 34;
+	GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE = 35;
+	GAME_PARTICLE_MANAGER_EVENT_ADD_FAN = 36;
+	GAME_PARTICLE_MANAGER_EVENT_UPDATE_FAN = 37;
+	GAME_PARTICLE_MANAGER_EVENT_SET_CLUSTER_GROWTH = 38;
 }
 
 enum EHapticPulseType {
@@ -161,6 +172,13 @@ message CUserMessageShake {
 message CUserMessageShakeDir {
 	optional .CUserMessageShake shake = 1;
 	optional .CMsgVector direction = 2;
+}
+
+message CUserMessageWaterShake {
+	optional uint32 command = 1;
+	optional float amplitude = 2;
+	optional float frequency = 3;
+	optional float duration = 4;
 }
 
 message CUserMessageScreenTilt {
@@ -334,6 +352,9 @@ message CUserMsg_ParticleManager {
 		optional bool apply_voice_ban_rules = 5;
 		optional int32 team_behavior = 6;
 		optional string control_point_configuration = 7;
+		optional bool cluster = 8;
+		optional float endcap_time = 9;
+		optional .CMsgVector aggregation_position = 10;
 	}
 
 	message DestroyParticle {
@@ -475,6 +496,16 @@ message CUserMsg_ParticleManager {
 		optional uint32 entity_handle = 3 [default = 16777215];
 	}
 
+	message AddModellistOverrideElement {
+		optional string model_name = 1;
+		optional float spawn_probability = 2;
+		optional uint32 groupid = 3;
+	}
+
+	message ClearModellistOverride {
+		optional uint32 groupid = 1;
+	}
+
 	message SetParticleNamedValueContext {
 		message FloatContextValue {
 			optional uint32 value_name_hash = 1;
@@ -501,6 +532,54 @@ message CUserMsg_ParticleManager {
 		repeated .CUserMsg_ParticleManager.SetParticleNamedValueContext.VectorContextValue vector_values = 2;
 		repeated .CUserMsg_ParticleManager.SetParticleNamedValueContext.TransformContextValue transform_values = 3;
 		repeated .CUserMsg_ParticleManager.SetParticleNamedValueContext.EHandleContext ehandle_values = 4;
+	}
+
+	message CreatePhysicsSim {
+		optional string prop_group_name = 1;
+		optional bool use_high_quality_simulation = 2;
+		optional uint32 max_particle_count = 3;
+	}
+
+	message DestroyPhysicsSim {
+	}
+
+	message SetVData {
+		optional string vdata_name = 1;
+	}
+
+	message SetMaterialOverride {
+		optional string material_name = 1;
+		optional bool include_children = 2;
+	}
+
+	message AddFan {
+		optional bool active = 1;
+		optional .CMsgVector bounds_mins = 2;
+		optional .CMsgVector bounds_maxs = 3;
+		optional .CMsgVector fan_origin = 4;
+		optional .CMsgVector fan_origin_offset = 5;
+		optional .CMsgVector fan_direction = 6;
+		optional float force = 7;
+		optional string fan_force_curve = 8;
+		optional bool falloff = 9;
+		optional bool pull_towards_point = 10;
+		optional float curve_min_dist = 11;
+		optional float curve_max_dist = 12;
+	}
+
+	message UpdateFan {
+		optional bool active = 1;
+		optional .CMsgVector fan_origin = 2;
+		optional .CMsgVector fan_origin_offset = 3;
+		optional .CMsgVector fan_direction = 4;
+		optional float fan_ramp_ratio = 7;
+		optional .CMsgVector bounds_mins = 5;
+		optional .CMsgVector bounds_maxs = 6;
+	}
+
+	message SetParticleClusterGrowth {
+		optional float duration = 1;
+		optional .CMsgVector origin = 2;
 	}
 
 	required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
@@ -534,6 +613,15 @@ message CUserMsg_ParticleManager {
 	optional .CUserMsg_ParticleManager.UpdateParticleTransform update_particle_transform = 30;
 	optional .CUserMsg_ParticleManager.ParticleFreezeTransitionOverride particle_freeze_transition_override = 31;
 	optional .CUserMsg_ParticleManager.FreezeParticleInvolving freeze_particle_involving = 32;
+	optional .CUserMsg_ParticleManager.AddModellistOverrideElement add_modellist_override_element = 33;
+	optional .CUserMsg_ParticleManager.ClearModellistOverride clear_modellist_override = 34;
+	optional .CUserMsg_ParticleManager.CreatePhysicsSim create_physics_sim = 35;
+	optional .CUserMsg_ParticleManager.DestroyPhysicsSim destroy_physics_sim = 36;
+	optional .CUserMsg_ParticleManager.SetVData set_vdata = 37;
+	optional .CUserMsg_ParticleManager.SetMaterialOverride set_material_override = 38;
+	optional .CUserMsg_ParticleManager.AddFan add_fan = 39;
+	optional .CUserMsg_ParticleManager.UpdateFan update_fan = 40;
+	optional .CUserMsg_ParticleManager.SetParticleClusterGrowth set_particle_cluster_growth = 41;
 
 	extensions 100 to 201;
 }
@@ -563,18 +651,6 @@ message CUserMessageHapticsManagerEffect {
 message CUserMessageAnimStateGraphState {
 	optional int32 entity_index = 1;
 	optional bytes data = 2;
-}
-
-message CUserMessageCommandQueueState {
-	message command_queue_info_t {
-		optional uint32 commands_queued = 1;
-		optional uint32 command_queue_desired_size = 2;
-		optional uint32 starved_command_ticks = 3;
-		optional int32 time_dilation_percent = 4;
-	}
-
-	optional int32 player_slot = 1 [default = -1];
-	optional .CUserMessageCommandQueueState.command_queue_info_t command_queue_info = 2;
 }
 
 message CUserMessageUpdateCssClasses {
@@ -634,6 +710,13 @@ message CUserMessage_DllStatus {
 		optional string string_value = 4;
 	}
 
+	message CModule {
+		optional uint64 base_addr = 1;
+		optional string name = 2;
+		optional uint32 size = 3;
+		optional uint32 timestamp = 4;
+	}
+
 	optional string file_report = 1;
 	optional string command_line = 2;
 	optional uint32 total_files = 3;
@@ -641,6 +724,7 @@ message CUserMessage_DllStatus {
 	optional int32 osversion = 5;
 	optional uint64 client_time = 6;
 	repeated .CUserMessage_DllStatus.CVDiagnostic diagnostics = 7;
+	repeated .CUserMessage_DllStatus.CModule modules = 8;
 }
 
 message CUserMessageRequestInventory {
@@ -675,6 +759,7 @@ message CUserMessage_Inventory_Response {
 	optional int32 inv_type = 11;
 	optional int32 build_version = 12;
 	optional int32 instance = 13;
+	optional int64 start_time = 15;
 }
 
 message CUserMessageRequestDiagnostic {
@@ -690,6 +775,8 @@ message CUserMessageRequestDiagnostic {
 		optional int64 detail = 9;
 		optional string name = 10;
 		optional string alias = 11;
+		optional bytes vardetail = 12;
+		optional int32 context = 13;
 	}
 
 	repeated .CUserMessageRequestDiagnostic.Diagnostic diagnostics = 1;
@@ -705,11 +792,21 @@ message CUserMessage_Diagnostic_Response {
 		optional int64 base = 6;
 		optional int64 range = 7;
 		optional int32 type = 8;
+		optional string name = 10;
+		optional string alias = 11;
+		optional bytes backup = 12;
+		optional int32 context = 13;
+		optional int64 control = 14;
+		optional int64 augment = 15;
+		optional int64 placebo = 16;
 	}
 
 	repeated .CUserMessage_Diagnostic_Response.Diagnostic diagnostics = 1;
 	optional int32 build_version = 2;
 	optional int32 instance = 3;
+	optional int64 start_time = 4;
+	optional int32 osversion = 5;
+	optional int32 platform = 6;
 }
 
 message CUserMessage_ExtraUserData {
@@ -718,4 +815,33 @@ message CUserMessage_ExtraUserData {
 	optional int64 value2 = 3;
 	repeated bytes detail1 = 4;
 	repeated bytes detail2 = 5;
+}
+
+message CUserMessage_NotifyResponseFound {
+	message Criteria {
+		optional uint32 name_symbol = 1;
+		optional string value = 2;
+	}
+
+	optional int32 ent_index = 1 [default = -1];
+	optional string rule_name = 2;
+	optional string response_value = 3;
+	optional string response_concept = 4;
+	repeated .CUserMessage_NotifyResponseFound.Criteria criteria = 5;
+	repeated uint32 int_criteria_names = 6 [packed = true];
+	repeated int32 int_criteria_values = 7 [packed = true];
+	repeated uint32 float_criteria_names = 8 [packed = true];
+	repeated float float_criteria_values = 9;
+	repeated uint32 symbol_criteria_names = 10 [packed = true];
+	repeated uint32 symbol_criteria_values = 11 [packed = true];
+	optional int32 speak_result = 12;
+}
+
+message CUserMessage_PlayResponseConditional {
+	optional int32 ent_index = 1 [default = -1];
+	repeated int32 player_slots = 2;
+	optional string response = 3;
+	optional .CMsgVector ent_origin = 4;
+	optional float pre_delay = 5;
+	optional int32 mix_priority = 6;
 }

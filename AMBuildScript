@@ -43,9 +43,7 @@ def ResolveMMSRoot():
   if builder.options.mms_path:
     prenormalized_path = builder.options.mms_path
   else:
-    prenormalized_path = ResolveEnvPath('MMSOURCE20', 'mmsource-2.0')
-    if not prenormalized_path:
-      prenormalized_path = ResolveEnvPath('MMSOURCE112', 'mmsource-1.12')
+    prenormalized_path = ResolveEnvPath('MMSOURCE112', 'mmsource-1.12')
     if not prenormalized_path:
       prenormalized_path = ResolveEnvPath('MMSOURCE111', 'mmsource-1.11')
     if not prenormalized_path:
@@ -82,12 +80,12 @@ class MMSPluginConfig(object):
     if builder.options.plugin_name is not None:
       self.plugin_name = builder.options.plugin_name
     else:
-      self.plugin_name = 'FakeRanks'
+      self.plugin_name = 'fakeranks'
 
     if builder.options.plugin_alias is not None:
       self.plugin_alias = builder.options.plugin_alias
     else:
-      self.plugin_alias = 'FakeRanks'
+      self.plugin_alias = 'fakeranks'
 
     if builder.options.targets:
       target_archs = builder.options.targets.split(',')
