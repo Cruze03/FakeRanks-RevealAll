@@ -45,6 +45,7 @@ jobs:
         shell: bash
         run: |
           mkdir build && cd build
+          export CXXFLAGS="-std=c++20"
           python ../configure.py --enable-optimize --symbol-files --sdks cs2 --hl2sdk-manifests hl2sdk-manifests
           ambuild
       - name: Upload artifact
