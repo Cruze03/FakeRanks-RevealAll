@@ -17,8 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: FakeRanks-RevealAll
+          path: fakeranks
           submodules: recursive
+          fetch-depth: 0
+
       - name: Checkout Metamod
         uses: actions/checkout@v4
         with:
@@ -26,30 +28,40 @@ jobs:
           ref: master
           path: mmsource-2.0
           submodules: recursive
+
       - name: Checkout HL2SDK
         uses: actions/checkout@v4
         with:
           repository: alliedmodders/hl2sdk
           ref: cs2
           path: hl2sdk-cs2
+
       - name: Checkout AMBuild
         uses: actions/checkout@v4
         with:
           repository: alliedmodders/ambuild
           path: ambuild
+
       - name: Install AMBuild
         run: |
           cd ambuild && python setup.py install && cd ..
+
+      - name: Install Clang 16
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          apt update && apt install -y clang-16
+          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
+
       - name: Build
-        working-directory: FakeRanks-RevealAll
+        working-directory: fakeranks
         shell: bash
         run: |
           mkdir build && cd build
-          export CXXFLAGS="-std=c++20"
           python ../configure.py --enable-optimize --symbol-files --sdks cs2 --hl2sdk-manifests hl2sdk-manifests
           ambuild
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}
-          path: FakeRanks-RevealAll/build/package
+          path: fakeranks/build/package
