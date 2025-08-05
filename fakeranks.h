@@ -7,6 +7,7 @@
 #include "irecipientfilter.h"
 #include <sh_vector.h>
 #include "iserver.h"
+#include <bit>
 
 class CRecipientFilter : public IRecipientFilter
 {
@@ -34,6 +35,13 @@ public:
 	{
 		if (slot.Get() >= 0 && slot.Get() < ABSOLUTE_PLAYER_LIMIT)
 			m_Recipients.Set(slot.Get());
+	}
+
+	int GetRecipientCount()
+	{
+		const uint64 bits = *reinterpret_cast<const uint64*>(&GetRecipients());
+
+		return std::popcount(bits);
 	}
 
 protected:
