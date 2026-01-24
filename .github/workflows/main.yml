@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: fakeranks
+          path: ${{ github.event.repository.name }}
           submodules: recursive
           fetch-depth: 0
 
@@ -36,15 +36,48 @@ jobs:
           ref: cs2
           path: hl2sdk-cs2
 
+      - name: Checkout HL2SDK Manifests
+        uses: actions/checkout@v4
+        with:
+          repository: alliedmodders/hl2sdk-manifests
+          ref: master
+          path: hl2sdk-manifests
+# ------------ Windows ------------
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        if: runner.os == 'Windows'
+        with:
+          python-version: "3.11"
+
+      - name: Install pip
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl https://bootstrap.pypa.io/pip/3.6/get-pip.py | python
+
+      - name: Clone AMBuild
+        uses: actions/checkout@v6
+        if: runner.os == 'Windows'
+        with:
+          repository: alliedmodders/ambuild
+          path: ./ambuild
+
+      - name: Install AMBuild
+        if: runner.os == 'Windows'
+        run: |
+          python -m pip install ./ambuild
+# ------------ Linux ------------
       - name: Checkout AMBuild
         uses: actions/checkout@v4
+        if: runner.os == 'Linux'
         with:
           repository: alliedmodders/ambuild
           path: ambuild
 
       - name: Install AMBuild
+        if: runner.os == 'Linux'
         run: |
           cd ambuild && python setup.py install && cd ..
+# -------------------------------
 
       - name: Install Clang 16
         if: matrix.os == 'ubuntu-latest'
@@ -53,7 +86,7 @@ jobs:
           ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
 
       - name: Build
-        working-directory: fakeranks
+        working-directory: ${{ github.event.repository.name }}
         shell: bash
         run: |
           mkdir build && cd build
@@ -64,4 +97,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}
-          path: fakeranks/build/package
+          path: ${{ github.event.repository.name }}/build/package

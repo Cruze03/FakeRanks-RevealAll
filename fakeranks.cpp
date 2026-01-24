@@ -11,25 +11,26 @@
 #include <inetchannel.h>
 #include "protobuf/generated/cstrike15_usermessages.pb.h"
 
-class GameSessionConfiguration_t { };
+class GameSessionConfiguration_t
+{
+};
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t &, ISource2WorldSession *, const char *);
 
-
 FakeRank_RevealAll g_FakeRanks;
 PLUGIN_EXPOSE(FakeRank_RevealAll, g_FakeRanks);
 
-IServerGameDLL* server = NULL;
+IServerGameDLL *server = NULL;
 CGlobalVars *g_pGlobals = nullptr;
-CGameEntitySystem* g_pEntitySystem = nullptr;
+CGameEntitySystem *g_pEntitySystem = nullptr;
 IGameEventSystem *g_pGameEventSystem = nullptr;
 
 uint64_t iOldButtons[65];
 
-CGlobalVars* GetGameGlobals()
+CGlobalVars *GetGameGlobals()
 {
-	INetworkGameServer* srv = g_pNetworkServerService->GetIGameServer();
+	INetworkGameServer *srv = g_pNetworkServerService->GetIGameServer();
 
 	if (!srv)
 		return nullptr;
@@ -37,14 +38,14 @@ CGlobalVars* GetGameGlobals()
 	return g_pNetworkServerService->GetIGameServer()->GetGlobals();
 }
 
-CGameEntitySystem* GameEntitySystem()
+CGameEntitySystem *GameEntitySystem()
 {
 #ifdef WIN32
 	static int offset = 88;
 #else
 	static int offset = 80;
 #endif
-	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer)+offset);
+	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
 }
 
 bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
@@ -58,14 +59,14 @@ bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI *ismm, char *error, size_t ma
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pGameResourceServiceServer, IGameResourceService, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
 
-	g_SMAPI->AddListener( this, this );
+	g_SMAPI->AddListener(this, this);
 
 	SH_ADD_HOOK(IServerGameDLL, GameFrame, server, SH_MEMBER(this, &FakeRank_RevealAll::Hook_GameFrame), true);
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &FakeRank_RevealAll::Hook_StartupServer), true);
 
-	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
+	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-	if(late)
+	if (late)
 	{
 		g_pEntitySystem = GameEntitySystem();
 		g_pGlobals = GetGameGlobals();
@@ -82,7 +83,7 @@ bool FakeRank_RevealAll::Unload(char *error, size_t maxlen)
 	return true;
 }
 
-void FakeRank_RevealAll::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
+void FakeRank_RevealAll::Hook_StartupServer(const GameSessionConfiguration_t &config, ISource2WorldSession *, const char *)
 {
 	g_pEntitySystem = GameEntitySystem();
 	g_pGlobals = GetGameGlobals();
@@ -90,22 +91,24 @@ void FakeRank_RevealAll::Hook_StartupServer(const GameSessionConfiguration_t& co
 
 void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick)
 {
-	if(!g_pEntitySystem || !g_pGlobals)
+	if (!g_pEntitySystem || !g_pGlobals)
 		return;
 
-	if(g_pGlobals->tickcount % 12 != 0)
+	if (g_pGlobals->tickcount % 12 != 0)
 		return;
 
 	int maxClients = g_pGlobals->maxClients > 64 ? 64 : g_pGlobals->maxClients;
 	CRecipientFilter filter;
 
-	for(int i = 0; i < maxClients; i++)
+	for (int i = 0; i < maxClients; i++)
 	{
-		CCSPlayerController* pPlayerController = (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
+		CCSPlayerController *pPlayerController = (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(i + 1));
 
-		if(!pPlayerController) continue;
+		if (!pPlayerController)
+			continue;
 
-		if(!pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices()) continue;
+		if (!pPlayerController->IsConnected() || !pPlayerController->m_hPawn() || !pPlayerController->m_hPawn()->m_pMovementServices())
+			continue;
 
 		uint64_t iButtons = pPlayerController->m_hPawn()->m_pMovementServices()->m_nButtons().m_pButtonStates()[0];
 		if ((iButtons & PlayerButtons_t::Scoreboard) && !(iOldButtons[i] & PlayerButtons_t::Scoreboard))
@@ -115,7 +118,7 @@ void FakeRank_RevealAll::Hook_GameFrame(bool simulating, bool bFirstTick, bool b
 		iOldButtons[i] = iButtons;
 	}
 
-	if(filter.GetRecipientCount() > 0)
+	if (filter.GetRecipientCount() > 0)
 	{
 		INetworkMessageInternal *netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
 		CNetMessage *msg = netmsg->AllocateMessage();
@@ -129,12 +132,12 @@ void FakeRank_RevealAll::AllPluginsLoaded()
 {
 }
 
-void FakeRank_RevealAll::OnLevelInit(char const* pMapName,
-	char const* pMapEntities,
-	char const* pOldLevel,
-	char const* pLandmarkName,
-	bool loadGame,
-	bool background)
+void FakeRank_RevealAll::OnLevelInit(char const *pMapName,
+									 char const *pMapEntities,
+									 char const *pOldLevel,
+									 char const *pLandmarkName,
+									 bool loadGame,
+									 bool background)
 {
 }
 
@@ -159,7 +162,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.0.8";
+	return "1.1.0";
 }
 
 const char *FakeRank_RevealAll::GetDate()

@@ -7,17 +7,15 @@
 #include "irecipientfilter.h"
 #include <sh_vector.h>
 #include "iserver.h"
-#include <bit>
 
 class CRecipientFilter : public IRecipientFilter
 {
 public:
-	CRecipientFilter(NetChannelBufType_t nBufType = BUF_RELIABLE, bool bInitMessage = false) :
-		m_nBufType(nBufType), m_bInitMessage(bInitMessage) {}
+	CRecipientFilter(NetChannelBufType_t nBufType = BUF_RELIABLE, bool bInitMessage = false) : m_nBufType(nBufType), m_bInitMessage(bInitMessage) {}
 
-	CRecipientFilter(IRecipientFilter* source, CPlayerSlot exceptSlot = -1)
+	CRecipientFilter(IRecipientFilter *source, CPlayerSlot exceptSlot = -1)
 	{
-		m_Recipients = GetRecipients();
+		m_Recipients = source->GetRecipients();
 		m_nBufType = source->GetNetworkBufType();
 		m_bInitMessage = source->IsInitMessage();
 
@@ -29,7 +27,8 @@ public:
 
 	NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
-	const CPlayerBitVec& GetRecipients(void) const { return m_Recipients; }
+	const CPlayerBitVec &GetRecipients(void) const override { return m_Recipients; }
+	CPlayerSlot GetPredictedByPlayerSlot(void) const override { return m_Recipients.Get(0); }
 
 	void AddRecipient(CPlayerSlot slot)
 	{
@@ -37,12 +36,7 @@ public:
 			m_Recipients.Set(slot.Get());
 	}
 
-	int GetRecipientCount()
-	{
-		const uint64 bits = *reinterpret_cast<const uint64*>(&GetRecipients());
-
-		return std::popcount(bits);
-	}
+	int GetRecipientCount() { return GetRecipients().PopulationCount(); }
 
 protected:
 	NetChannelBufType_t m_nBufType;
@@ -59,16 +53,18 @@ public:
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
 	void AllPluginsLoaded();
-	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
-public: //hooks
-	void OnLevelInit( char const *pMapName,
-				 char const *pMapEntities,
-				 char const *pOldLevel,
-				 char const *pLandmarkName,
-				 bool loadGame,
-				 bool background );
+	void Hook_StartupServer(const GameSessionConfiguration_t &config, ISource2WorldSession *, const char *);
+
+public: // hooks
+	void OnLevelInit(char const *pMapName,
+					 char const *pMapEntities,
+					 char const *pOldLevel,
+					 char const *pLandmarkName,
+					 bool loadGame,
+					 bool background);
 	void OnLevelShutdown();
-	void Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick );
+	void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick);
+
 public:
 	const char *GetAuthor();
 	const char *GetName();
