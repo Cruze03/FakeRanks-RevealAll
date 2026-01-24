@@ -28,7 +28,7 @@ public:
 	NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
 	const CPlayerBitVec &GetRecipients(void) const override { return m_Recipients; }
-	CPlayerSlot GetPredictedByPlayerSlot(void) const override { return m_Recipients.Get(0); }
+	CPlayerSlot GetPredictedPlayerSlot(void) const override { return m_Recipients.Get(0); }
 
 	void AddRecipient(CPlayerSlot slot)
 	{
@@ -36,7 +36,12 @@ public:
 			m_Recipients.Set(slot.Get());
 	}
 
-	int GetRecipientCount() { return GetRecipients().PopulationCount(); }
+	int GetRecipientCount()
+	{
+		const uint64 bits = *reinterpret_cast<const uint64 *>(&GetRecipients());
+
+		return std::popcount(bits);
+	}
 
 protected:
 	NetChannelBufType_t m_nBufType;
