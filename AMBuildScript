@@ -293,6 +293,11 @@ class MMSPluginConfig(object):
 
     SdkHelpers.configureCxx(context, binary, sdk)
 
+    if cxx.behavior == 'msvc':
+        cxx.cxxflags += ['/std:c++20']
+    else:
+        cxx.cxxflags += ['-std=c++20']
+
     cxx.linkflags += additional_libs(context, binary, sdk)
     cxx.defines += additional_defines(context, binary, sdk)
     cxx.cxxincludes += additional_includes(context, binary, sdk)

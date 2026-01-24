@@ -7,6 +7,7 @@
 #include "irecipientfilter.h"
 #include <sh_vector.h>
 #include "iserver.h"
+#include <bit>
 
 class CRecipientFilter : public IRecipientFilter
 {
