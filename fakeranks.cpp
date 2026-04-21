@@ -162,7 +162,7 @@ const char *FakeRank_RevealAll::GetLicense()
 
 const char *FakeRank_RevealAll::GetVersion()
 {
-	return "1.1.0";
+	return "1.1.1";
 }
 
 const char *FakeRank_RevealAll::GetDate()
