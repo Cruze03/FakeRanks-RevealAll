@@ -5,81 +5,75 @@
 #include <igameevents.h>
 #include "engine/igameeventsystem.h"
 #include "irecipientfilter.h"
-#include <sh_vector.h>
+#include "khook.hpp"
 #include "iserver.h"
 #include <bit>
 
 class CRecipientFilter : public IRecipientFilter
 {
-public:
-	CRecipientFilter(NetChannelBufType_t nBufType = BUF_RELIABLE, bool bInitMessage = false) : m_nBufType(nBufType), m_bInitMessage(bInitMessage) {}
+  public:
+    CRecipientFilter(NetChannelBufType_t nBufType = BUF_RELIABLE, bool bInitMessage = false) : m_nBufType(nBufType), m_bInitMessage(bInitMessage) {}
 
-	CRecipientFilter(IRecipientFilter *source, CPlayerSlot exceptSlot = -1)
-	{
-		m_Recipients = source->GetRecipients();
-		m_nBufType = source->GetNetworkBufType();
-		m_bInitMessage = source->IsInitMessage();
+    CRecipientFilter(IRecipientFilter* source, CPlayerSlot exceptSlot = -1)
+    {
+        m_Recipients = source->GetRecipients();
+        m_nBufType = source->GetNetworkBufType();
+        m_bInitMessage = source->IsInitMessage();
 
-		if (exceptSlot != -1)
-			m_Recipients.Clear(exceptSlot.Get());
-	}
+        if (exceptSlot != -1) m_Recipients.Clear(exceptSlot.Get());
+    }
 
-	~CRecipientFilter() override {}
+    ~CRecipientFilter() override {}
 
-	NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
-	bool IsInitMessage(void) const override { return m_bInitMessage; }
-	const CPlayerBitVec &GetRecipients(void) const override { return m_Recipients; }
-	CPlayerSlot GetPredictedPlayerSlot(void) const override { return m_Recipients.Get(0); }
+    NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
+    bool IsInitMessage(void) const override { return m_bInitMessage; }
+    const CPlayerBitVec& GetRecipients(void) const override { return m_Recipients; }
+    CPlayerSlot GetPredictedPlayerSlot(void) const override { return m_Recipients.Get(0); }
 
-	void AddRecipient(CPlayerSlot slot)
-	{
-		if (slot.Get() >= 0 && slot.Get() < ABSOLUTE_PLAYER_LIMIT)
-			m_Recipients.Set(slot.Get());
-	}
+    void AddRecipient(CPlayerSlot slot)
+    {
+        if (slot.Get() >= 0 && slot.Get() < ABSOLUTE_PLAYER_LIMIT) m_Recipients.Set(slot.Get());
+    }
 
-	int GetRecipientCount()
-	{
-		const uint64 bits = *reinterpret_cast<const uint64 *>(&GetRecipients());
+    int GetRecipientCount()
+    {
+        const uint64 bits = *reinterpret_cast<const uint64*>(&GetRecipients());
 
-		return std::popcount(bits);
-	}
+        return std::popcount(bits);
+    }
 
-protected:
-	NetChannelBufType_t m_nBufType;
-	bool m_bInitMessage;
-	CPlayerBitVec m_Recipients;
+  protected:
+    NetChannelBufType_t m_nBufType;
+    bool m_bInitMessage;
+    CPlayerBitVec m_Recipients;
 };
+
+KHook::Return<void> Hook_GameFrame_Post(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick);
+KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 
 class FakeRank_RevealAll : public ISmmPlugin, public IMetamodListener
 {
-public:
-	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
-	bool Unload(char *error, size_t maxlen);
-	void UpdatePlayers();
-	bool Pause(char *error, size_t maxlen);
-	bool Unpause(char *error, size_t maxlen);
-	void AllPluginsLoaded();
-	void Hook_StartupServer(const GameSessionConfiguration_t &config, ISource2WorldSession *, const char *);
+  public:
+    bool Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool late);
+    bool Unload(char* error, size_t maxlen);
+    void UpdatePlayers();
+    bool Pause(char* error, size_t maxlen);
+    bool Unpause(char* error, size_t maxlen);
+    void AllPluginsLoaded();
 
-public: // hooks
-	void OnLevelInit(char const *pMapName,
-					 char const *pMapEntities,
-					 char const *pOldLevel,
-					 char const *pLandmarkName,
-					 bool loadGame,
-					 bool background);
-	void OnLevelShutdown();
-	void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick);
+  public: // hooks
+    void OnLevelInit(char const* pMapName, char const* pMapEntities, char const* pOldLevel, char const* pLandmarkName, bool loadGame, bool background);
+    void OnLevelShutdown();
 
-public:
-	const char *GetAuthor();
-	const char *GetName();
-	const char *GetDescription();
-	const char *GetURL();
-	const char *GetLicense();
-	const char *GetVersion();
-	const char *GetDate();
-	const char *GetLogTag();
+  public:
+    const char* GetAuthor();
+    const char* GetName();
+    const char* GetDescription();
+    const char* GetURL();
+    const char* GetLicense();
+    const char* GetVersion();
+    const char* GetDate();
+    const char* GetLogTag();
 };
 
 extern FakeRank_RevealAll g_FakeRanks;
