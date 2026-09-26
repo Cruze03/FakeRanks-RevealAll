@@ -26,6 +26,7 @@ CGameEntitySystem* g_pEntitySystem = nullptr;
 IGameEventSystem* g_pGameEventSystem = nullptr;
 
 uint64_t g_iOldButtons[65];
+bool g_bRequiredInitLoaded = true;
 
 CGlobalVars* GetGameGlobals()
 {
@@ -52,18 +53,32 @@ std::vector<CKHookBase*>& GetKHookList()
     return s_vecSigHooks;
 }
 
+void InitKHooks()
+{
+    for (auto hook : GetKHookList())
+        hook->Configure();
+}
+
 bool FakeRank_RevealAll::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool late)
 {
     PLUGIN_SAVEVARS();
 
-    GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL);
+    GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
     GET_V_IFACE_CURRENT(GetEngineFactory, g_pSchemaSystem, ISchemaSystem, SCHEMASYSTEM_INTERFACE_VERSION);
     GET_V_IFACE_CURRENT(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
     GET_V_IFACE_CURRENT(GetEngineFactory, g_pGameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
-    GET_V_IFACE_CURRENT(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
+    GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
     GET_V_IFACE_CURRENT(GetEngineFactory, g_pGameResourceServiceServer, IGameResourceService, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
 
     g_SMAPI->AddListener(this, this);
+
+    InitKHooks();
+
+    if (!g_bRequiredInitLoaded)
+    {
+        snprintf(error, maxlen, "Failed to hook one or more virtual functions, please refer to startup logs for more information");
+        return false;
+    }
 
     ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -135,7 +150,7 @@ bool FakeRank_RevealAll::Unpause(char* error, size_t maxlen) { return true; }
 
 const char* FakeRank_RevealAll::GetLicense() { return "GPLv3"; }
 
-const char* FakeRank_RevealAll::GetVersion() { return "1.1.3"; }
+const char* FakeRank_RevealAll::GetVersion() { return "1.1.3-fix"; }
 
 const char* FakeRank_RevealAll::GetDate() { return __DATE__; }
 

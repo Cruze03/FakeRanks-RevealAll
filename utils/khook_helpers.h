@@ -21,9 +21,13 @@
 
 class CKHookBase
 {
+  public:
+    virtual void Configure() = 0;
 };
 
 extern std::vector<CKHookBase*>& GetKHookList();
+extern bool g_bRequiredInitLoaded;
+void InitKHooks();
 
 template <typename CLASS, typename RETURN, typename... ARGS> class CKHookVirtual : public CKHookBase
 {
@@ -39,6 +43,17 @@ template <typename CLASS, typename RETURN, typename... ARGS> class CKHookVirtual
     ~CKHookVirtual()
     {
         if (m_hook.IsActive()) m_hook.Remove(m_pInstance);
+    }
+
+    virtual void Configure() override
+    {
+        if (!m_pInstance)
+        {
+            g_bRequiredInitLoaded = false;
+            return;
+        }
+
+        m_hook.Add(m_pInstance);
     }
 
     RETURN CallOriginal(CLASS* this_ptr, ARGS... args) { return m_hook.CallOriginal(this_ptr, args...); }
