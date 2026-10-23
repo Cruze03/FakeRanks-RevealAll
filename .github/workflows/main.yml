@@ -41,12 +41,12 @@ jobs:
           path: mmsource-2.0
           submodules: recursive
 
-      - name: Checkout HL2SDK
+      - name: Checkout S2SDK
         uses: actions/checkout@v4
         with:
-          repository: alliedmodders/hl2sdk
+          repository: alliedmodders/s2sdk
           ref: cs2
-          path: hl2sdk-cs2
+          path: s2sdk
 
       - name: Checkout HL2SDK Manifests
         uses: actions/checkout@v4

@@ -19,6 +19,7 @@
 
 #pragma once
 #include <cstdint>
+#include <cstdio>
 #include "metamod_oslink.h"
 
 struct Module

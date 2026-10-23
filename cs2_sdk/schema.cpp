@@ -25,16 +25,18 @@
 
 #include "tier0/memdbgon.h"
 
+#include <map>
+
 using SchemaKeyValueMap_t = std::map<uint32_t, SchemaKey>;
 using SchemaTableMap_t = std::map<uint32_t, SchemaKeyValueMap_t>;
 
 
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
-    for (int i = 0; i < field.m_nStaticMetadataCount; i++)
+    for (int i = 0; i < field.m_nNumMetadata; i++)
     {
         static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
-        if (networkEnabled == hash_32_fnv1a_const(field.m_pStaticMetadata[i].m_pszName))
+        if (networkEnabled == hash_32_fnv1a_const(field.m_pMetadata[i].m_pName))
             return true;
     }
 
@@ -59,7 +61,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* cla
 		return false;
 	}
 
-	short fieldsSize = pClassInfo->m_nFieldCount;
+	short fieldsSize = pClassInfo->m_nNumFields;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
 	SchemaKeyValueMap_t &keyValueMap = tableMap.insert(std::make_pair(classKey, SchemaKeyValueMap_t())).first->second;
@@ -69,11 +71,11 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* cla
 		SchemaClassFieldData_t& field = pFields[i];
 
 #ifdef _DEBUG
-		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
+		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_pName, field.m_nSingleInheritanceOffset, &field);
 #endif
 
 		std::pair<uint32_t, SchemaKey> keyValuePair;
-		keyValuePair.first = hash_32_fnv1a_const(field.m_pszName);
+		keyValuePair.first = hash_32_fnv1a_const(field.m_pName);
 		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
 		keyValuePair.second.networked = IsFieldNetworked(field);
 
@@ -95,15 +97,15 @@ int16_t schema::FindChainOffset(const char* className)
 	do
 	{
 		SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
-		short fieldsSize = pClassInfo->m_nFieldCount;
+		short fieldsSize = pClassInfo->m_nNumFields;
 		for (int i = 0; i < fieldsSize; ++i)
 		{
 			SchemaClassFieldData_t& field = pFields[i];
 
-			if (V_strcmp(field.m_pszName, "__m_pChainEntity") == 0)
+			if (V_strcmp(field.m_pName, "__m_pChainEntity") == 0)
 				return field.m_nSingleInheritanceOffset;
 		}
-	} while ((pClassInfo = pClassInfo->m_pBaseClasses ? pClassInfo->m_pBaseClasses->m_pClass : nullptr) != nullptr);
+	} while ((pClassInfo = pClassInfo->m_nNumBaseClasses ? pClassInfo->m_pBaseClasses[0].m_pClass : nullptr) != nullptr);
 
 	return 0;
 }

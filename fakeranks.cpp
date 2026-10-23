@@ -6,16 +6,13 @@
 #include "cs2_sdk/entity/cbaseplayerpawn.h"
 #include "cs2_sdk/entity/ccsplayercontroller.h"
 #include "cs2_sdk/entity/cbaseplayercontroller.h"
+#include "gameentitysystem.h"
 #include <networksystem/inetworkserializer.h>
 #include <networksystem/inetworkmessages.h>
-#include <inetchannel.h>
-#include "protobuf/generated/cstrike15_usermessages.pb.h"
+#include <networksystem/inetchannel.h>
+#include "cstrike15_usermessages.pb.h"
 
-class GameSessionConfiguration_t
-{
-};
-
-KHOOK_VIRTUAL(GameFrame, &IServerGameDLL::GameFrame, g_pSource2Server, nullptr, Hook_GameFrame_Post);
+KHOOK_VIRTUAL(GameFrame, &ISource2Server::GameFrame, g_pSource2Server, nullptr, Hook_GameFrame_Post);
 KHOOK_VIRTUAL(StartupServer, &INetworkServerService::StartupServer, g_pNetworkServerService, nullptr, Hook_StartupServer_Post);
 
 FakeRank_RevealAll g_FakeRanks;
@@ -30,21 +27,11 @@ bool g_bRequiredInitLoaded = true;
 
 CGlobalVars* GetGameGlobals()
 {
-    INetworkGameServer* srv = g_pNetworkServerService->GetIGameServer();
+    CNetworkGameServerBase* srv = g_pNetworkServerService->GetIGameServer();
 
     if (!srv) return nullptr;
 
-    return g_pNetworkServerService->GetIGameServer()->GetGlobals();
-}
-
-CGameEntitySystem* GameEntitySystem()
-{
-#ifdef WIN32
-    static int offset = 88;
-#else
-    static int offset = 80;
-#endif
-    return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
+    return srv->GetGlobals();
 }
 
 std::vector<CKHookBase*>& GetKHookList()
@@ -100,7 +87,7 @@ KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const 
     return { KHook::Action::Ignore };
 }
 
-KHook::Return<void> Hook_GameFrame_Post(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick)
+KHook::Return<void> Hook_GameFrame_Post(ISource2Server* pThis, bool simulating, bool bFirstTick, bool bLastTick)
 {
     if (!g_pEntitySystem || !g_pGlobals) return { KHook::Action::Ignore };
 
@@ -147,19 +134,3 @@ void FakeRank_RevealAll::OnLevelShutdown() {}
 bool FakeRank_RevealAll::Pause(char* error, size_t maxlen) { return true; }
 
 bool FakeRank_RevealAll::Unpause(char* error, size_t maxlen) { return true; }
-
-const char* FakeRank_RevealAll::GetLicense() { return "GPLv3"; }
-
-const char* FakeRank_RevealAll::GetVersion() { return "1.1.3-fix"; }
-
-const char* FakeRank_RevealAll::GetDate() { return __DATE__; }
-
-const char* FakeRank_RevealAll::GetLogTag() { return "FakeRanks"; }
-
-const char* FakeRank_RevealAll::GetAuthor() { return "Cruze"; }
-
-const char* FakeRank_RevealAll::GetDescription() { return "Reveals all fake ranks"; }
-
-const char* FakeRank_RevealAll::GetName() { return "FakeRanks - Reveal All"; }
-
-const char* FakeRank_RevealAll::GetURL() { return "https://github.com/cruze03"; }

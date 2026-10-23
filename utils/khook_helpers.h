@@ -19,6 +19,9 @@
 
 #pragma once
 
+#include <memory>
+#include <vector>
+
 class CKHookBase
 {
   public:

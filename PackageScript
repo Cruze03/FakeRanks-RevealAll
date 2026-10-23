@@ -3,45 +3,50 @@ import os
 
 builder.SetBuildFolder('package')
 
+plugin_name = MMSPlugin.metadata['name']
+plugin_alias = MMSPlugin.metadata['alias']
+
 metamod_folder = builder.AddFolder(os.path.join('addons', 'metamod'))
-bin_folder_path = os.path.join('addons', MMSPlugin.plugin_name, 'bin')
+bin_folder_path = os.path.join('addons', plugin_name, 'bin')
 bin_folder = builder.AddFolder(bin_folder_path)
 
 for cxx in MMSPlugin.all_targets:
   if cxx.target.arch == 'x86_64':
     if cxx.target.platform == 'windows':
-      bin64_folder_path = os.path.join('addons', MMSPlugin.plugin_name, 'bin', 'win64')
+      bin64_folder_path = os.path.join('addons', plugin_name, 'bin', 'win64')
       bin64_folder = builder.AddFolder(bin64_folder_path)
     elif cxx.target.platform == 'linux':
-      bin64_folder_path = os.path.join('addons', MMSPlugin.plugin_name, 'bin', 'linuxsteamrt64')
+      bin64_folder_path = os.path.join('addons', plugin_name, 'bin', 'linuxsteamrt64')
       bin64_folder = builder.AddFolder(bin64_folder_path)
     elif cxx.target.platform == 'mac':
-      bin64_folder_path = os.path.join('addons', MMSPlugin.plugin_name, 'bin', 'osx64')
+      bin64_folder_path = os.path.join('addons', plugin_name, 'bin', 'osx64')
       bin64_folder = builder.AddFolder(bin64_folder_path)
 
 pdb_list = []
-for task in MMSPlugin.binaries:
+for task in MMSPlugin.tasks:
   # This hardly assumes there's only 1 targetted platform and would be overwritten
   # with whatever comes last if multiple are used!
-  with open(os.path.join(builder.buildPath, MMSPlugin.plugin_name + '.vdf'), 'w') as fp:
+  with open(os.path.join(builder.buildPath, plugin_name + '.vdf'), 'w') as fp:
     fp.write('"Metamod Plugin"\n')
     fp.write('{\n')
-    fp.write(f'\t"alias"\t"{MMSPlugin.plugin_alias}"\n')
+    fp.write(f'\t"alias"\t"{plugin_alias}"\n')
     if task.target.arch == 'x86_64':
-      fp.write(f'\t"file"\t"{os.path.join(bin64_folder_path, MMSPlugin.plugin_name)}"\n')
+      fp.write(f'\t"file"\t"{os.path.join(bin64_folder_path, plugin_name)}"\n')
     else:
-      fp.write(f'\t"file"\t"{os.path.join(bin_folder_path, MMSPlugin.plugin_name)}"\n')
+      fp.write(f'\t"file"\t"{os.path.join(bin_folder_path, plugin_name)}"\n')
     fp.write('}\n')
 
+  # Strip the SDK suffix (e.g. ".2.cs2") so the file matches the VDF entry.
+  plugin_bin_ext = os.path.splitext(os.path.basename(task.binary.path))[1]
   if task.target.arch == 'x86_64':
-    builder.AddCopy(task.binary, bin64_folder)
+    builder.AddCopy(task.binary, os.path.join(bin64_folder_path, plugin_name + plugin_bin_ext))
   else:
-    builder.AddCopy(task.binary, bin_folder)
+    builder.AddCopy(task.binary, os.path.join(bin_folder_path, plugin_name + plugin_bin_ext))
 
   if task.debug:
     pdb_list.append(task.debug)
 
-builder.AddCopy(os.path.join(builder.buildPath, MMSPlugin.plugin_name + '.vdf'), metamod_folder)
+builder.AddCopy(os.path.join(builder.buildPath, plugin_name + '.vdf'), metamod_folder)
 
 # Generate PDB info.
 with open(os.path.join(builder.buildPath, 'pdblog.txt'), 'wt') as fp:

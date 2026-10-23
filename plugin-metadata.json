@@ -1,0 +1,11 @@
+{
+    "name": "fakeranks",
+    "alias": "FakeRanks",
+    "display_name": "FakeRanks - Reveal All",
+    "description": "Reveals all fake ranks",
+    "author": "Cruze",
+    "url": "https://github.com/cruze03/FakeRanks-RevealAll/",
+    "log_tag": "fakeranks",
+    "license": "GPL",
+    "version": "1.0.0.{{git-shorthash}}"
+}

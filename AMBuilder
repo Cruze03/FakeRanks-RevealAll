@@ -1,6 +1,8 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os
 
+project = builder.LibraryProject(MMSPlugin.metadata["name"])
+
 # Here only one sdk should be available to generate only one executable in the end,
 # as multi-sdk loading isn't supported out of the box by metamod, and would require specifying the full path in the vdf
 # which in the end would ruin the multi-platform (unix, win etc) loading by metamod as it won't be able to append platform specific extension
@@ -10,7 +12,7 @@ for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
 
-  binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+  binary = MMSPlugin.HL2Library(builder, cxx, project, sdk)
 
   binary.sources += [
     'fakeranks.cpp',
@@ -18,7 +20,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     os.path.join(sdk['path'], 'entity2', 'entitysystem.cpp'),
     os.path.join(sdk['path'], 'entity2', 'entityidentity.cpp'),
     os.path.join(sdk['path'], 'entity2', 'entitykeyvalues.cpp'),
-    os.path.join(sdk['path'], 'tier1', 'keyvalues3.cpp')
+    os.path.join(sdk['path'], 'tier0_perproject', 'keyvalues3.cpp')
   ]
 
 
@@ -39,23 +41,26 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   protoc_builder = builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
     os.path.join(sdk['path'], 'game', 'shared', 'usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_gcmessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_usermessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_gcmessages.proto'),
     os.path.join(sdk['path'], 'gcsdk', 'steammessages.proto'),
     os.path.join(sdk['path'], 'common', 'engine_gcmessages.proto'),
     os.path.join(sdk['path'], 'gcsdk', 'gcsdk_gcmessages.proto'),
     os.path.join(sdk['path'], 'common', 'networkbasetypes.proto'),
+    os.path.join(sdk['path'], 'common', 'netmessages.proto'),
+    os.path.join(sdk['path'], 'common', 'source2_steam_stats.proto'),
     os.path.join(sdk['path'], 'common', 'valveextensions.proto'),
     os.path.join(sdk['path'], 'common', 'network_connection.proto'),
   ])
+  # The cstrike15 folder must come before the SDK's own 'game/shared' proto path, otherwise protoc
+  # resolves these files as 'cstrike15/<name>.proto' and writes the generated headers into a subfolder.
+  protoc_builder.protoc.includes[0:0] = [
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15'),
+  ]
   protoc_builder.protoc.includes += [
     os.path.join(sdk['path'], 'gcsdk'),
-    os.path.join(sdk['path'], 'common'),
-    os.path.join(sdk['path'], 'game', 'shared'),
-    os.path.join(builder.sourcePath, 'protobuf'),
   ]
 
   binary.custom = [protoc_builder]
 
-  nodes = builder.Add(binary)
-  MMSPlugin.binaries += [nodes]
+  MMSPlugin.tasks += builder.Add(project)
