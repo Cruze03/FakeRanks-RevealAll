@@ -25,6 +25,7 @@
 class CKHookBase
 {
   public:
+    virtual ~CKHookBase() = default;
     virtual void Configure() = 0;
 };
 
@@ -43,7 +44,7 @@ template <typename CLASS, typename RETURN, typename... ARGS> class CKHookVirtual
         GetKHookList().push_back(this);
     }
 
-    ~CKHookVirtual()
+    ~CKHookVirtual() override
     {
         if (m_hook.IsActive()) m_hook.Remove(m_pInstance);
     }
