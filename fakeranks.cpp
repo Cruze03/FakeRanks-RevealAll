@@ -114,7 +114,7 @@ KHook::Return<void> Hook_GameFrame_Post(ISource2Server* pThis, bool simulating, 
 
     if (filter.GetRecipientCount() > 0)
     {
-        INetworkMessageInternal* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
+        NetMessageInfo_t* netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CCSUsrMsg_ServerRankRevealAll");
         CNetMessage* msg = netmsg->AllocateMessage();
         g_pGameEventSystem->PostEventAbstract(0, false, &filter, netmsg, msg, 0);
         delete msg;
