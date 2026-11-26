@@ -45,6 +45,10 @@ for task in MMSPlugin.tasks:
 
   if task.debug:
     pdb_list.append(task.debug)
+    if task.target.arch == 'x86_64':
+      builder.AddCopy(task.debug, os.path.join(bin64_folder_path, plugin_name + '.pdb'))
+    else:
+      builder.AddCopy(task.debug, os.path.join(bin_folder_path, plugin_name + '.pdb'))
 
 builder.AddCopy(os.path.join(builder.buildPath, plugin_name + '.vdf'), metamod_folder)
 
